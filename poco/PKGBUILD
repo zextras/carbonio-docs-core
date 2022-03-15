@@ -1,0 +1,75 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-poco"
+pkgver="1.11.1"
+pkgrel="1"
+pkgdesc="C++ class libraries for network-centric, portable applications, complete edition with debug libraries"
+pkgdesclong=(
+  "C++ class libraries for network-centric, portable applications, complete edition with debug libraries"
+)
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+section="mail"
+priority="optional"
+arch="amd64"
+depends:apt=(
+  "carbonio-openssl"
+)
+makedepends:apt=(
+  "autoconf"
+  "carbonio-openssl"
+  "cmake"
+  "ninja-build"
+  "unixodbc-dev"
+)
+depends:yum=(
+  "carbonio-openssl"
+)
+makedepends:yum=(
+  "carbonio-openssl"
+  "cmake"
+  "expat-devel"
+  "gcc-c++"
+  "libtool-ltdl-devel"
+  "make"
+  "pcre-devel"
+  "zlib-devel"
+)
+sources=("https://github.com/pocoproject/poco/archive/refs/tags/poco-${pkgver}-release.tar.gz")
+hashsums=(
+  "2412a5819a239ff2ee58f81033bcc39c40460d7a8b330013a687c8c0bd2b4ac0"
+)
+
+build() {
+  cd "${srcdir}/poco-poco-${pkgver}-release"
+  export CFLAGS="-I/opt/zextras/common/include $CFLAGS"
+  export LDFLAGS="-Wl,-rpath,/opt/zextras/common/lib -L/opt/zextras/common/lib $LDFLAGS"
+
+  cmake \
+    -GNinja \
+    -Bbuild \
+    -DENABLE_TESTS=OFF \
+    -DENABLE_MONGODB=OFF \
+    -DENABLE_ACTIVERECORD=OFF \
+    -DENABLE_DATA=OFF \
+    -DENABLE_DATA_MYSQL=OFF \
+    -DENABLE_DATA_ODBC=OFF \
+    -DENABLE_DATA_POSTGRESQL=OFF \
+    -DENABLE_DATA_SQLITE=OFF \
+    -DENABLE_APACHECONNECTOR=OFF \
+    -DENABLE_REDIS=OFF \
+    -DENABLE_ZIP=OFF \
+    -DOPENSSL_DIR=/opt/zextras/common \
+    -DCMAKE_INSTALL_PREFIX="/opt/zextras/common" \
+    -DCMAKE_BUILD_TYPE=Release .
+
+  ninja -C build -j 8
+}
+
+package() {
+  cd "${srcdir}/poco-poco-${pkgver}-release"
+
+  DESTDIR="${pkgdir}" ninja -C build install
+}

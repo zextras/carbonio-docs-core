@@ -1,0 +1,216 @@
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="carbonio-docs-core"
+pkgver="21.06.20"
+pkgrel="1"
+pkgdesc="Core components for Docs Server"
+pkgdesclong=(
+  "Core components for Docs Server"
+)
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+section="mail"
+priority="optional"
+arch="amd64"
+depends:apt=(
+  "carbonio-openssl"
+  "carbonio-curl"
+  "libcap2-bin"
+  "libepoxy0"
+  "python3-lxml" 
+  "python3-polib"
+  "zip"
+)
+makedepends:apt=(
+  "autoconf"
+  "automake"
+  "bison"
+  "carbonio-curl"
+  "carbonio-openssl"
+  "flex"
+  "fontconfig"
+  "gettext"
+  "git"
+  "gperf"
+  "libcap-dev"
+  "libcppunit-dev" 
+  "libcups2-dev"
+  "libepoxy-dev"
+  "libfontconfig1-dev"
+  "libkrb5-dev"
+  "libpam0g-dev"
+  "libpcre3-dev"
+  "libpng-dev"
+  "libtool"
+  "m4"
+  "make"
+  "nasm"
+  "pkg-config"
+  "python3"
+  "python3-lxml"
+  "python3-polib"
+  "unzip"
+  "uuid-runtime"
+  "zip"
+)
+depends:yum=(
+  "carbonio-curl"
+  "carbonio-openssl"
+  "python36-lxml"
+  "python36-polib"
+  "zip"
+)
+makedepends:yum=(
+  "automake"
+  "bison"
+  "bzip2"  
+  "carbonio-curl"
+  "carbonio-openssl"
+  "cpio"
+  "cpp"
+  "cppunit-devel"
+  "cups-devel"
+  "flex"
+  "fontconfig"
+  "fontconfig-devel"
+  "git"
+  "gperf"
+  "libcap-devel"
+  "libcap-ng-devel"
+  "libpng-devel"
+  "libtool"
+  "m4"
+  "nasm"
+  "nodejs"
+  "pam-devel"
+  "pcre-devel"
+  "pkgconfig"  
+  "pxz"
+  "unzip"
+  "util-linux"
+  "which"
+  "zip"
+)
+sources=(
+  "https://github.com/LibreOffice/core/archive/cp-${pkgver}-1.tar.gz"
+  "openoffice.lst.in.append"
+  "zextras-core.patch"
+)
+hashsums=(
+  "03f836d059072518142d81ab8fdc72e2de1d93cd959bf595093599e71f8de847"
+  "98f41a0f9cda7bfbee46dfb78fcc12331404276f4bdf7763e090dd9b0d524076"
+  "6f1efcb306983fab253af0854431a4a26d957bb93a52cf89202bf75a071328e7"
+)
+
+build() {
+  cd "${srcdir}/core-cp-${pkgver}-1"
+
+  mkdir external/tarballs/
+
+  curl -L -C - "https://github.com/LibreOffice/dictionaries/archive/cp-${pkgver}-1.tar.gz" \
+    -o "external/tarballs/libreoffice-dictionaries-${pkgver}.tar.xz"
+  curl -L -C - "https://github.com/LibreOffice/help/archive/cp-${pkgver}-1.tar.gz" \
+    -o "external/tarballs/libreoffice-help-${pkgver}.tar.xz"
+  curl -L -C - "https://github.com/LibreOffice/translations/archive/cp-${pkgver}-1.tar.gz" \
+    -o "external/tarballs/libreoffice-translations-${pkgver}.tar.xz"
+  
+  tar xf "external/tarballs/libreoffice-dictionaries-${pkgver}.tar.xz" \
+    --directory=dictionaries \
+    --strip-components 1
+  tar xf "external/tarballs/libreoffice-help-${pkgver}.tar.xz" \
+    --directory=helpcontent2 \
+    --strip-components 1
+  tar xf "external/tarballs/libreoffice-translations-${pkgver}.tar.xz" \
+    --directory=translations \
+    --strip-components 1
+
+  # patch -Np1 -i ../zextras-core.patch
+  cat ../openoffice.lst.in.append >> instsetoo_native/util/openoffice.lst.in
+
+  ./autogen.sh --libdir=/opt/zextras/docs \
+    --prefix=/opt/zextras/docs \
+		--enable-release-build \
+    --enable-eot \
+    --enable-extension-integration \
+    --with-product-name=core \
+    --with-vendor=zextras \
+    --with-system-dicts \
+    --with-myspell-dicts \
+    --with-system-zlib \
+    --without-helppack-integration \
+    --without-package-format \
+    --without-system-cairo \
+    --without-system-openssl \
+    --without-system-libpng \
+    --without-system-libxml \
+    --without-system-jpeg \
+    --without-system-expat \
+ 		--without-system-boost \
+    --without-system-curl \
+    --without-system-icu \
+    --without-system-nss \
+    --without-system-jars \
+    --without-system-poppler \
+    --without-system-postgresql \
+    --without-java \
+    --without-junit \
+    --without-help \
+    --with-linker-hash-style=both \
+    --with-fonts \
+    --enable-noto-font \
+    --with-galleries=no \
+    --with-theme=colibre_svg \
+    --disable-dbus \
+    --disable-odk \
+    --disable-kf5 \
+    --disable-gtk3 \
+    --disable-qt5 \
+    --disable-gstreamer-1-0 \
+    --disable-evolution2 \
+    --disable-gio \
+    --disable-gui \
+    --disable-scripting-beanshell \
+    --disable-scripting-javascript \
+    --disable-ext-wiki-publisher \
+    --disable-report-builder \
+    --disable-ext-nlpsolver \
+    --disable-sdremote \
+    --disable-sdremote-bluetooth \
+    --disable-postgresql-sdbc \
+    --disable-firebird-sdbc \
+    --disable-randr \
+    --enable-ext-numbertext \
+    --disable-ext-ct2n \
+    --enable-epm \
+    --enable-python=no \
+    --disable-online-update \
+    --disable-dconf \
+    --enable-mergelibs \
+    --enable-release-build \
+    --with-lang=ALL \
+    --disable-lotuswordpro \
+    --disable-lpsolve \
+    --disable-symbols \
+    --disable-coinmp \
+    --disable-debug \
+    --disable-extension-update \
+    --disable-neon
+  echo "lo_sources_ver=${pkgver}" > sources.ver
+  make build-nocheck -j 8
+}
+
+package() {
+  cd "${srcdir}/core-cp-${pkgver}-1"
+
+  install -dm755 "${pkgdir}/opt/zextras/docs/core"
+ 	cp -r instdir/* "${pkgdir}"/opt/zextras/docs/core
+
+	# add headers
+	install -dm755 "${pkgdir}"/opt/zextras/common/include/LibreOfficeKit
+	install -v -m644 include/LibreOfficeKit/* \
+    "${pkgdir}"/opt/zextras/common/include/LibreOfficeKit
+
+  rm "${pkgdir}"/opt/zextras/docs/core/EULA*
+}
