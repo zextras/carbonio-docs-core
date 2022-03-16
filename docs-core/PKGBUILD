@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-docs-core"
-pkgver="21.06.20"
+pkgver="21.06.21"
 pkgrel="1"
 pkgdesc="Core components for Docs Server"
 pkgdesclong=(
@@ -99,7 +99,7 @@ sources=(
   "zextras-core.patch"
 )
 hashsums=(
-  "03f836d059072518142d81ab8fdc72e2de1d93cd959bf595093599e71f8de847"
+  "skip"
   "98f41a0f9cda7bfbee46dfb78fcc12331404276f4bdf7763e090dd9b0d524076"
   "6f1efcb306983fab253af0854431a4a26d957bb93a52cf89202bf75a071328e7"
 )
