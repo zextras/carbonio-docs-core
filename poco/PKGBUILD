@@ -33,8 +33,11 @@ makedepends:yum=(
   "expat-devel"
   "gcc-c++"
   "libtool-ltdl-devel"
+  "libuv-devel"
   "make"
+  "ninja-build"
   "pcre-devel"
+  "platform-python-devel"
   "zlib-devel"
 )
 sources=("https://github.com/pocoproject/poco/archive/refs/tags/poco-${pkgver}-release.tar.gz")
