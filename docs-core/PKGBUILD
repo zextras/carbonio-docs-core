@@ -141,7 +141,7 @@ build() {
 
   ./autogen.sh --libdir=/opt/zextras/docs \
     --prefix=/opt/zextras/docs \
-		--enable-release-build \
+    --enable-release-build \
     --enable-eot \
     --enable-extension-integration \
     --with-product-name=core \
@@ -157,7 +157,7 @@ build() {
     --without-system-libxml \
     --without-system-jpeg \
     --without-system-expat \
- 		--without-system-boost \
+    --without-system-boost \
     --without-system-curl \
     --without-system-icu \
     --without-system-nss \
