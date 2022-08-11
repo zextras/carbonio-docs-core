@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-docs-core"
-pkgver="21.06.21"
+pkgver="22.05.5"
 pkgrel="2"
 pkgdesc="Core components for Docs Server"
 pkgdesclong=(
@@ -135,9 +135,10 @@ build() {
 
   # patch -Np1 -i ../zextras-core.patch
   # fix not upstreamable pyuno paths - FS#54250
-
   patch -Np1 -i ../make-pyuno-work-with-system-wide-module-install.diff
   cat ../openoffice.lst.in.append >> instsetoo_native/util/openoffice.lst.in
+
+  sed -i "s/: check-if-root/:/" Makefile.in
 
   ./autogen.sh --libdir=/opt/zextras/docs \
     --prefix=/opt/zextras/docs \
@@ -205,8 +206,7 @@ build() {
     --disable-symbols \
     --disable-coinmp \
     --disable-debug \
-    --disable-extension-update \
-    --disable-neon
+    --disable-extension-update
   echo "lo_sources_ver=${pkgver}" > sources.ver
   make build-nocheck -j 8
 }
