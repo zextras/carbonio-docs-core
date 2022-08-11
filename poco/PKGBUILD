@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-poco"
-pkgver="1.11.1"
+pkgver="1.12.2"
 pkgrel="1"
 pkgdesc="C++ class libraries for network-centric, portable applications, complete edition with debug libraries"
 pkgdesclong=(
@@ -64,7 +64,6 @@ build() {
     -DENABLE_APACHECONNECTOR=OFF \
     -DENABLE_REDIS=OFF \
     -DENABLE_ZIP=OFF \
-    -DOPENSSL_DIR=/opt/zextras/common \
     -DCMAKE_INSTALL_PREFIX="/opt/zextras/common" \
     -DCMAKE_BUILD_TYPE=Release .
 

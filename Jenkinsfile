@@ -46,7 +46,7 @@ pipeline {
                         sh 'sudo mv auth.conf /etc/apt'
                 }
                 sh '''
-sudo echo "deb https://zextras.jfrog.io/artifactory/ubuntu-release focal main" > zextras.list
+sudo echo "deb https://zextras.jfrog.io/artifactory/ubuntu-rc focal main" > zextras.list
 sudo mv zextras.list /etc/apt/sources.list.d/
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243E584A21
 '''
