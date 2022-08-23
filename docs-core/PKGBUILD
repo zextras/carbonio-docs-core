@@ -91,6 +91,7 @@ makedepends:yum=(
   "pam-devel"
   "pcre-devel"
   "pkgconfig"
+  "python3"
   "python3-lxml"
   "python3-polib"
   "pxz"
