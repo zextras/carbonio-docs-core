@@ -3,8 +3,8 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-docs-core"
-pkgver="22.05.5"
-pkgrel="2"
+pkgver="22.05.6"
+pkgrel="1"
 pkgdesc="Core components for Docs Server"
 pkgdesclong=(
   "Core components for Docs Server"
@@ -101,7 +101,7 @@ makedepends:yum=(
   "zip"
 )
 sources=(
-  "https://github.com/LibreOffice/core/archive/cp-${pkgver}-1.tar.gz"
+  "https://github.com/LibreOffice/core/archive/cp-${pkgver}-3.tar.gz"
   "make-pyuno-work-with-system-wide-module-install.diff"
   "openoffice.lst.in.append"
 )
@@ -112,7 +112,7 @@ hashsums=(
 )
 
 build() {
-  cd "${srcdir}/core-cp-${pkgver}-1"
+  cd "${srcdir}/core-cp-${pkgver}-3"
   if [ ! -d external/tarballs ]; then
     mkdir external/tarballs/
 
@@ -213,7 +213,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/core-cp-${pkgver}-1"
+  cd "${srcdir}/core-cp-${pkgver}-3"
 
   install -dm755 "${pkgdir}/opt/zextras/docs/core"
  	cp -r instdir/* "${pkgdir}"/opt/zextras/docs/core
