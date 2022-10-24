@@ -216,11 +216,18 @@ package() {
   cd "${srcdir}/core-cp-${pkgver}-3"
 
   install -dm755 "${pkgdir}/opt/zextras/docs/core"
- 	cp -r instdir/* "${pkgdir}"/opt/zextras/docs/core
+  cp -r instdir/* "${pkgdir}"/opt/zextras/docs/core
 
-	# add headers
-	install -dm755 "${pkgdir}"/opt/zextras/common/include/LibreOfficeKit
-	install -v -m644 include/LibreOfficeKit/* \
+  # make pyuno find its modules
+  install -dm755 "${pkgdir}"/opt/zextras/common/lib/python3.8/site-packages
+  ln -svf /opt/zextras/docs/core/program/uno.py \
+    "${pkgdir}"/opt/zextras/common/lib/python3.8/site-packages/uno.py
+  ln -svf /opt/zextras/docs/core/program/unohelper.py \
+    "${pkgdir}"/opt/zextras/common/lib/python3.8/site-packages/unohelper.py
+
+  # add headers
+  install -dm755 "${pkgdir}"/opt/zextras/common/include/LibreOfficeKit
+  install -v -m644 include/LibreOfficeKit/* \
     "${pkgdir}"/opt/zextras/common/include/LibreOfficeKit
 
   rm "${pkgdir}"/opt/zextras/docs/core/EULA*
