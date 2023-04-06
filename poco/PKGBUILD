@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-poco"
-pkgver="1.12.2"
+pkgver="1.12.4"
 pkgrel="1"
 pkgdesc="C++ class libraries for network-centric, portable applications, complete edition with debug libraries"
 pkgdesclong=(
@@ -42,7 +42,7 @@ makedepends:yum=(
 )
 sources=("https://github.com/pocoproject/poco/archive/refs/tags/poco-${pkgver}-release.tar.gz")
 hashsums=(
-  "2412a5819a239ff2ee58f81033bcc39c40460d7a8b330013a687c8c0bd2b4ac0"
+  "71ef96c35fced367d6da74da294510ad2c912563f12cd716ab02b6ed10a733ef"
 )
 
 build() {
