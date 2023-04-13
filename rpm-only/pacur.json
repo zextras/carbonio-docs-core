@@ -7,6 +7,9 @@
         {
             "name": "polib",
             "install": true
+        },
+        {
+            "name": "harfbuzz-icu"
         }
     ]
 }
