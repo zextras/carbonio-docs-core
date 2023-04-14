@@ -1,5 +1,5 @@
 {
-    "name": "python-polib",
+    "name": "rpm-only",
     "Description": "This is required only at build stage and for RHEL8",
     "build_dir": "/tmp/",
     "output": "artifacts",
@@ -10,6 +10,9 @@
         },
         {
             "name": "harfbuzz-icu"
+        },
+        {
+            "name": "libepoxy"
         }
     ]
 }
