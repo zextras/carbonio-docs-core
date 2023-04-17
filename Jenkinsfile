@@ -127,6 +127,16 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                                 "pattern": "artifacts/(carbonio-docs-core)-(*).rpm",
                                 "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                            },
+                            {
+                                "pattern": "artifacts/(harfbuzz-icu)-(*).rpm",
+                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
+                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                            },
+                            {
+                                "pattern": "artifacts/(libepoxy)-(*).rpm",
+                                "target": "centos8-playground/zextras/{1}/{1}-{2}.rpm",
+                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             }
                         ]
                     }'''
@@ -192,6 +202,16 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                             },
                             {
                                 "pattern": "artifacts/(carbonio-docs-core)-(*).rpm",
+                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                            },
+                            {
+                                "pattern": "artifacts/(harfbuzz-icu)-(*).rpm",
+                                "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
+                                "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
+                            },
+                            {
+                                "pattern": "artifacts/(libepoxy)-(*).rpm",
                                 "target": "centos8-rc/zextras/{1}/{1}-{2}.rpm",
                                 "props": "rpm.metadata.arch=x86_64;rpm.metadata.vendor=zextras"
                             }

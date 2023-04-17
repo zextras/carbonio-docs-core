@@ -1,0 +1,49 @@
+# This package is provided only by a 3rd-party repo (OKey) on
+# RHEL8 (on non-enterprise ones is directly available)
+# Please have a look at:
+# https://git.rockylinux.org/staging/rpms/libepoxy/-/blob/r8/SPECS/libepoxy.spec
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="libepoxy"
+pkgver="1.5.2"
+pkgrel="1"
+pkgdesc="epoxy runtime library"
+pkgdesclong=(
+  "A library for handling OpenGL function pointer management."
+)
+license=("MIT")
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+section="Unspecified"
+arch="amd64"
+makedepends=(
+  "gcc"
+  "libglvnd-devel"
+  "libX11-devel"
+  "mesa-dri-drivers"
+  "meson"
+  "python3"
+  "xorg-x11-server-Xvfb"
+)
+
+sources=("https://github.com/anholt/libepoxy/releases/download/${pkgver}/${pkgname}-${pkgver}.tar.xz")
+hashsums=(
+  "a9562386519eb3fd7f03209f279f697a8cba520d3c155d6e253c3e138beca7d8"
+)
+
+build() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+  meson builddir --prefix=/usr
+  meson compile -C builddir
+}
+
+package() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+
+  DESTDIR="${pkgdir}" meson install -C builddir
+
+  rm -rf "${pkgdir}/usr/include"
+  rm -rf "${pkgdir}/usr/lib64/pkgconfig"
+}

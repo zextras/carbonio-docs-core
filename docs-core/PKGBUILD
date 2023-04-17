@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-docs-core"
-pkgver="22.05.6"
+pkgver="22.05.12"
 pkgrel="1"
 pkgdesc="Core components for Docs Server"
 pkgdesclong=(
@@ -19,6 +19,8 @@ depends:apt=(
   "carbonio-openssl"
   "libcap2-bin"
   "libepoxy0"
+  "libgraphite2-3"
+  "libharfbuzz-icu0"
   "python3"
   "zip"
 )
@@ -38,6 +40,8 @@ makedepends:apt=(
   "libcups2-dev"
   "libepoxy-dev"
   "libfontconfig1-dev"
+  "libgraphite2-dev"
+  "libharfbuzz-dev"
   "libkrb5-dev"
   "libpam0g-dev"
   "libpcre3-dev"
@@ -59,6 +63,8 @@ makedepends:apt=(
 depends:yum=(
   "carbonio-curl"
   "carbonio-openssl"
+  "graphite2"
+  "harfbuzz-icu"
   "libepoxy"
   "nspr"
   "python3"
@@ -79,6 +85,8 @@ makedepends:yum=(
   "fontconfig-devel"
   "git"
   "gperf"
+  "graphite2-devel"
+  "harfbuzz-devel"
   "libcap-devel"
   "libcap-ng-devel"
   "libepoxy-devel"
@@ -116,11 +124,11 @@ build() {
   if [ ! -d external/tarballs ]; then
     mkdir external/tarballs/
 
-    curl -L -C - "https://github.com/LibreOffice/dictionaries/archive/cp-${pkgver}-1.tar.gz" \
+    curl -L -C - "https://github.com/LibreOffice/dictionaries/archive/cp-${pkgver}-3.tar.gz" \
       -o "external/tarballs/libreoffice-dictionaries-${pkgver}.tar.xz"
-    curl -L -C - "https://github.com/LibreOffice/help/archive/cp-${pkgver}-1.tar.gz" \
+    curl -L -C - "https://github.com/LibreOffice/help/archive/cp-${pkgver}-3.tar.gz" \
       -o "external/tarballs/libreoffice-help-${pkgver}.tar.xz"
-    curl -L -C - "https://github.com/LibreOffice/translations/archive/cp-${pkgver}-1.tar.gz" \
+    curl -L -C - "https://github.com/LibreOffice/translations/archive/cp-${pkgver}-3.tar.gz" \
       -o "external/tarballs/libreoffice-translations-${pkgver}.tar.xz"
   fi
 
@@ -134,7 +142,6 @@ build() {
     --directory=translations \
     --strip-components 1
 
-  # patch -Np1 -i ../zextras-core.patch
   # fix not upstreamable pyuno paths - FS#54250
   patch -Np1 -i ../make-pyuno-work-with-system-wide-module-install.diff
   cat ../openoffice.lst.in.append >> instsetoo_native/util/openoffice.lst.in

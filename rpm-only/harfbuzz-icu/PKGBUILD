@@ -1,0 +1,60 @@
+# This package is provided only by a 3rd-party repo (OKey) on
+# RHEL8 (on non-enterprise ones is directly available)
+# Please have a look at:
+# https://git.rockylinux.org/staging/rpms/harfbuzz/-/blob/r8/SPECS/harfbuzz.spec
+targets=(
+  "centos"
+  "ubuntu"
+)
+pkgname="harfbuzz-icu"
+pkgver="1.7.5"
+pkgrel="3"
+pkgdesc="Text shaping library"
+pkgdesclong=(
+  "HarfBuzz is an implementation of the OpenType Layout engine."
+)
+license=("MIT")
+maintainer="Zextras <packages@zextras.com>"
+url="https://zextras.com"
+section="Unspecified"
+arch="amd64"
+conflicts=(
+  "harfbuzz"
+)
+depends=(
+  "libicu"
+)
+makedepends=(
+  "cairo-devel"
+  "freetype-devel"
+  "gcc-c++"
+  "glib2-devel"
+  "graphite2-devel"
+  "gtk-doc"
+  "libicu-devel"
+)
+sources=("http://www.freedesktop.org/software/harfbuzz/release/harfbuzz-${pkgver}.tar.bz2")
+hashsums=(
+  "84574e1b1f65ca694cb8fb6905309665c0368af18a312357f8ff886ee2f29563"
+)
+
+build() {
+  cd "${srcdir}/harfbuzz-${pkgver}"
+  ./configure --prefix=/usr --disable-static --with-graphite2
+
+  # Remove lib64 rpath
+  sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
+  sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
+}
+
+package() {
+  cd "${srcdir}/harfbuzz-${pkgver}"
+
+  make DESTDIR="${pkgdir}" install
+
+  rm -rf "${pkgdir}/usr/bin"
+  rm -rf "${pkgdir}/usr/include"
+  rm -rf "${pkgdir}/usr/lib64"/*.la
+  rm -rf "${pkgdir}/usr/lib64/pkgconfig"
+  rm -rf "${pkgdir}/usr/share"
+}
