@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-docs-core"
-pkgver="22.05.12"
+pkgver="23.05.0"
 pkgrel="1"
 pkgdesc="Core components for Docs Server"
 pkgdesclong=(
@@ -109,7 +109,7 @@ makedepends:yum=(
   "zip"
 )
 sources=(
-  "https://github.com/LibreOffice/core/archive/cp-${pkgver}-3.tar.gz"
+  "https://github.com/LibreOffice/core/archive/cp-${pkgver}-5.tar.gz"
   "make-pyuno-work-with-system-wide-module-install.diff"
   "openoffice.lst.in.append"
 )
@@ -120,15 +120,15 @@ hashsums=(
 )
 
 build() {
-  cd "${srcdir}/core-cp-${pkgver}-3"
+  cd "${srcdir}/core-cp-${pkgver}-5"
   if [ ! -d external/tarballs ]; then
     mkdir external/tarballs/
 
-    curl -L -C - "https://github.com/LibreOffice/dictionaries/archive/cp-${pkgver}-3.tar.gz" \
+    curl -L -C - "https://github.com/LibreOffice/dictionaries/archive/cp-${pkgver}-5.tar.gz" \
       -o "external/tarballs/libreoffice-dictionaries-${pkgver}.tar.xz"
-    curl -L -C - "https://github.com/LibreOffice/help/archive/cp-${pkgver}-3.tar.gz" \
+    curl -L -C - "https://github.com/LibreOffice/help/archive/cp-${pkgver}-5.tar.gz" \
       -o "external/tarballs/libreoffice-help-${pkgver}.tar.xz"
-    curl -L -C - "https://github.com/LibreOffice/translations/archive/cp-${pkgver}-3.tar.gz" \
+    curl -L -C - "https://github.com/LibreOffice/translations/archive/cp-${pkgver}-5.tar.gz" \
       -o "external/tarballs/libreoffice-translations-${pkgver}.tar.xz"
   fi
 
@@ -201,7 +201,6 @@ build() {
     --disable-firebird-sdbc \
     --disable-randr \
     --enable-ext-numbertext \
-    --disable-ext-ct2n \
     --enable-epm \
     --enable-python=system \
     --disable-online-update \
@@ -216,11 +215,11 @@ build() {
     --disable-debug \
     --disable-extension-update
   echo "lo_sources_ver=${pkgver}" > sources.ver
-  make build-nocheck -j 8
+  make build -j 8
 }
 
 package() {
-  cd "${srcdir}/core-cp-${pkgver}-3"
+  cd "${srcdir}/core-cp-${pkgver}-5"
 
   install -dm755 "${pkgdir}/opt/zextras/docs/core"
   cp -r instdir/* "${pkgdir}"/opt/zextras/docs/core
