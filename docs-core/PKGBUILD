@@ -3,7 +3,7 @@ targets=(
   "ubuntu"
 )
 pkgname="carbonio-docs-core"
-pkgver="23.05.0"
+pkgver="23.05.1"
 pkgrel="1"
 pkgdesc="Core components for Docs Server"
 pkgdesclong=(
@@ -109,7 +109,7 @@ makedepends:yum=(
   "zip"
 )
 sources=(
-  "https://github.com/LibreOffice/core/archive/cp-${pkgver}-5.tar.gz"
+  "https://github.com/LibreOffice/core/archive/cp-${pkgver}-2.tar.gz"
   "make-pyuno-work-with-system-wide-module-install.diff"
   "openoffice.lst.in.append"
 )
@@ -120,15 +120,15 @@ hashsums=(
 )
 
 build() {
-  cd "${srcdir}/core-cp-${pkgver}-5"
+  cd "${srcdir}/core-cp-${pkgver}-2"
   if [ ! -d external/tarballs ]; then
     mkdir external/tarballs/
 
-    curl -L -C - "https://github.com/LibreOffice/dictionaries/archive/cp-${pkgver}-5.tar.gz" \
+    curl -L -C - "https://github.com/LibreOffice/dictionaries/archive/cp-${pkgver}-2.tar.gz" \
       -o "external/tarballs/libreoffice-dictionaries-${pkgver}.tar.xz"
-    curl -L -C - "https://github.com/LibreOffice/help/archive/cp-${pkgver}-5.tar.gz" \
+    curl -L -C - "https://github.com/LibreOffice/help/archive/cp-${pkgver}-2.tar.gz" \
       -o "external/tarballs/libreoffice-help-${pkgver}.tar.xz"
-    curl -L -C - "https://github.com/LibreOffice/translations/archive/cp-${pkgver}-5.tar.gz" \
+    curl -L -C - "https://github.com/LibreOffice/translations/archive/cp-${pkgver}-2.tar.gz" \
       -o "external/tarballs/libreoffice-translations-${pkgver}.tar.xz"
   fi
 
@@ -219,7 +219,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/core-cp-${pkgver}-5"
+  cd "${srcdir}/core-cp-${pkgver}-2"
 
   install -dm755 "${pkgdir}/opt/zextras/docs/core"
   cp -r instdir/* "${pkgdir}"/opt/zextras/docs/core
