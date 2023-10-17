@@ -2,22 +2,15 @@
 # RHEL8 (on non-enterprise ones is directly available)
 # Please have a look at:
 # https://git.rockylinux.org/staging/rpms/harfbuzz/-/blob/r8/SPECS/harfbuzz.spec
-targets=(
-  "centos"
-  "ubuntu"
-)
 pkgname="harfbuzz-icu"
 pkgver="1.7.5"
 pkgrel="3"
 pkgdesc="Text shaping library"
-pkgdesclong=(
-  "HarfBuzz is an implementation of the OpenType Layout engine."
-)
 license=("MIT")
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 section="Unspecified"
-arch="amd64"
+arch=('x86_64')
 conflicts=(
   "harfbuzz"
 )
@@ -32,9 +25,10 @@ makedepends=(
   "graphite2-devel"
   "gtk-doc"
   "libicu-devel"
+  "ragel"
 )
-sources=("http://www.freedesktop.org/software/harfbuzz/release/harfbuzz-${pkgver}.tar.bz2")
-hashsums=(
+source=("http://www.freedesktop.org/software/harfbuzz/release/harfbuzz-${pkgver}.tar.bz2")
+sha256sums=(
   "84574e1b1f65ca694cb8fb6905309665c0368af18a312357f8ff886ee2f29563"
 )
 

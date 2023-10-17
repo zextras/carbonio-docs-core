@@ -1,33 +1,26 @@
-targets=(
-  "centos"
-  "ubuntu"
-)
 pkgname="carbonio-poco"
 pkgver="1.12.4"
 pkgrel="1"
 pkgdesc="C++ class libraries for network-centric, portable applications, complete edition with debug libraries"
-pkgdesclong=(
-  "C++ class libraries for network-centric, portable applications, complete edition with debug libraries"
-)
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 section="mail"
 priority="optional"
-arch="amd64"
-depends:apt=(
+arch=('x86_64')
+depends__apt=(
   "carbonio-openssl"
 )
-makedepends:apt=(
+makedepends__apt=(
   "autoconf"
   "carbonio-openssl"
   "cmake"
   "ninja-build"
   "unixodbc-dev"
 )
-depends:yum=(
+depends__yum=(
   "carbonio-openssl"
 )
-makedepends:yum=(
+makedepends__yum=(
   "carbonio-openssl"
   "cmake"
   "expat-devel"
@@ -40,8 +33,8 @@ makedepends:yum=(
   "platform-python-devel"
   "zlib-devel"
 )
-sources=("https://github.com/pocoproject/poco/archive/refs/tags/poco-${pkgver}-release.tar.gz")
-hashsums=(
+source=("https://github.com/pocoproject/poco/archive/refs/tags/poco-${pkgver}-release.tar.gz")
+sha256sums=(
   "71ef96c35fced367d6da74da294510ad2c912563f12cd716ab02b6ed10a733ef"
 )
 

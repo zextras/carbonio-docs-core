@@ -1,7 +1,7 @@
 {
     "name": "Docs Core",
     "Description": "This is the lool-core project",
-    "build_dir": "/tmp/",
+    "buildDir": "/tmp/",
     "output": "artifacts",
     "Projects": [
         {
