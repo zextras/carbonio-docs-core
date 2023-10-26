@@ -2,22 +2,15 @@
 # RHEL8 (on non-enterprise ones is directly available)
 # Please have a look at:
 # https://git.rockylinux.org/staging/rpms/libepoxy/-/blob/r8/SPECS/libepoxy.spec
-targets=(
-  "centos"
-  "ubuntu"
-)
 pkgname="libepoxy"
 pkgver="1.5.2"
 pkgrel="1"
 pkgdesc="epoxy runtime library"
-pkgdesclong=(
-  "A library for handling OpenGL function pointer management."
-)
 license=("MIT")
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 section="Unspecified"
-arch="amd64"
+arch=('x86_64')
 makedepends=(
   "gcc"
   "libglvnd-devel"
@@ -28,8 +21,8 @@ makedepends=(
   "xorg-x11-server-Xvfb"
 )
 
-sources=("https://github.com/anholt/libepoxy/releases/download/${pkgver}/${pkgname}-${pkgver}.tar.xz")
-hashsums=(
+source=("https://github.com/anholt/libepoxy/releases/download/${pkgver}/${pkgname}-${pkgver}.tar.xz")
+sha256sums=(
   "a9562386519eb3fd7f03209f279f697a8cba520d3c155d6e253c3e138beca7d8"
 )
 

@@ -1,20 +1,13 @@
-targets=(
-  "centos"
-  "ubuntu"
-)
 pkgname="carbonio-docs-core"
 pkgver="23.05.1"
 pkgrel="1"
 pkgdesc="Core components for Docs Server"
-pkgdesclong=(
-  "Core components for Docs Server"
-)
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 section="mail"
 priority="optional"
-arch="amd64"
-depends:apt=(
+arch=('x86_64')
+depends__apt=(
   "carbonio-curl"
   "carbonio-openssl"
   "libcap2-bin"
@@ -24,7 +17,7 @@ depends:apt=(
   "python3"
   "zip"
 )
-makedepends:apt=(
+makedepends__apt=(
   "autoconf"
   "automake"
   "bison"
@@ -36,7 +29,7 @@ makedepends:apt=(
   "git"
   "gperf"
   "libcap-dev"
-  "libcppunit-dev" 
+  "libcppunit-dev"
   "libcups2-dev"
   "libepoxy-dev"
   "libfontconfig1-dev"
@@ -60,7 +53,7 @@ makedepends:apt=(
   "uuid-runtime"
   "zip"
 )
-depends:yum=(
+depends__yum=(
   "carbonio-curl"
   "carbonio-openssl"
   "graphite2"
@@ -70,10 +63,10 @@ depends:yum=(
   "python3"
   "zip"
 )
-makedepends:yum=(
+makedepends__yum=(
   "automake"
   "bison"
-  "bzip2"  
+  "bzip2"
   "carbonio-curl"
   "carbonio-openssl"
   "cpio"
@@ -98,6 +91,7 @@ makedepends:yum=(
   "nodejs"
   "pam-devel"
   "pcre-devel"
+  "perl"
   "pkgconfig"
   "python3"
   "python3-lxml"
@@ -108,13 +102,13 @@ makedepends:yum=(
   "which"
   "zip"
 )
-sources=(
+source=(
   "https://github.com/LibreOffice/core/archive/cp-${pkgver}-2.tar.gz"
   "make-pyuno-work-with-system-wide-module-install.diff"
   "openoffice.lst.in.append"
 )
-hashsums=(
-  "skip"
+sha256sums=(
+  "SKIP"
   "9f151e6e23ce75da475a2922ca091853e712f28da694b1d90d952b1290a6d846"
   "98f41a0f9cda7bfbee46dfb78fcc12331404276f4bdf7763e090dd9b0d524076"
 )
@@ -144,11 +138,11 @@ build() {
 
   # fix not upstreamable pyuno paths - FS#54250
   patch -Np1 -i ../make-pyuno-work-with-system-wide-module-install.diff
-  cat ../openoffice.lst.in.append >> instsetoo_native/util/openoffice.lst.in
+  cat ../openoffice.lst.in.append >>instsetoo_native/util/openoffice.lst.in
 
   sed -i "s/: check-if-root/:/" Makefile.in
 
-  ./autogen.sh --libdir=/opt/zextras/docs \
+  bash ./autogen.sh --libdir=/opt/zextras/docs \
     --prefix=/opt/zextras/docs \
     --enable-release-build \
     --enable-eot \
@@ -214,7 +208,7 @@ build() {
     --disable-coinmp \
     --disable-debug \
     --disable-extension-update
-  echo "lo_sources_ver=${pkgver}" > sources.ver
+  echo "lo_sources_ver=${pkgver}" >sources.ver
   make build -j 8
 }
 
