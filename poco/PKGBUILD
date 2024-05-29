@@ -1,5 +1,5 @@
 pkgname="carbonio-poco"
-pkgver="1.12.4"
+pkgver="1.13.3"
 pkgrel="1"
 pkgdesc="C++ class libraries for network-centric, portable applications, complete edition with debug libraries"
 maintainer="Zextras <packages@zextras.com>"
@@ -34,9 +34,7 @@ makedepends__yum=(
   "zlib-devel"
 )
 source=("https://github.com/pocoproject/poco/archive/refs/tags/poco-${pkgver}-release.tar.gz")
-sha256sums=(
-  "71ef96c35fced367d6da74da294510ad2c912563f12cd716ab02b6ed10a733ef"
-)
+sha256sums=('9f074d230daf30f550c5bde5528037bdab6aa83b2a06c81a25e89dd3bcb7e419')
 
 build() {
   cd "${srcdir}/poco-poco-${pkgver}-release"
