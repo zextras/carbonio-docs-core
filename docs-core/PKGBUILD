@@ -1,5 +1,5 @@
 pkgname="carbonio-docs-core"
-pkgver="23.05.10"
+pkgver="23.05.12"
 pkgrel="1"
 pkgdesc="Core components for Docs Server"
 maintainer="Zextras <packages@zextras.com>"
