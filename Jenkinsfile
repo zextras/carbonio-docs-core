@@ -50,7 +50,14 @@ sudo echo "deb https://zextras.jfrog.io/artifactory/ubuntu-rc focal main" > zext
 sudo mv zextras.list /etc/apt/sources.list.d/
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243E584A21
 '''
-                sh 'sudo yap build ubuntu-focal .'
+                script {
+                    if (BRANCH_NAME == 'devel') {
+                        def timestamp = new Date().format('yyyyMMddHHmmss')
+                        sh "sudo yap build ubuntu-focal . -r ${timestamp}"
+                    } else {
+                        sh 'sudo yap build ubuntu-focal .'
+                    }
+                }
                 stash includes: 'artifacts/*focal*.deb',
                 name: 'artifacts-ubuntu-focal'
             }
@@ -82,7 +89,14 @@ sudo echo "deb https://zextras.jfrog.io/artifactory/ubuntu-rc jammy main" > zext
 sudo mv zextras.list /etc/apt/sources.list.d/
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243E584A21
 '''
-                sh 'sudo yap build ubuntu-jammy .'
+                script {
+                    if (BRANCH_NAME == 'devel') {
+                        def timestamp = new Date().format('yyyyMMddHHmmss')
+                        sh "sudo yap build ubuntu-jammy . -r ${timestamp}"
+                    } else {
+                        sh 'sudo yap build ubuntu-jammy .'
+                    }
+                }
                 stash includes: 'artifacts/*jammy*.deb',
                 name: 'artifacts-ubuntu-jammy'
             }
@@ -111,8 +125,15 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                         sh 'echo "gpgkey=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/centos8-rc/repomd.xml.key" >> zextras.repo'
                         sh 'sudo mv zextras.repo /etc/yum.repos.d/zextras.repo'
                 }
-                sh 'sudo yap build rocky-8 rhel-only'
-                sh 'sudo yap build rocky-8 .'
+                script {
+                    if (BRANCH_NAME == 'devel') {
+                        def timestamp = new Date().format('yyyyMMddHHmmss')
+                        sh "sudo yap build rocky-8 rhel-only -r ${timestamp}"
+                        sh "sudo yap build rocky-8 . -r ${timestamp}"
+                    } else {
+                        sh 'sudo yap build rocky-8 .'
+                    }
+                }
                 stash includes: 'artifacts/x86_64/*el8*.rpm',
                 name: 'artifacts-rocky-8'
             }
@@ -141,8 +162,15 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                         sh 'echo "gpgkey=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/rhel9-rc/repomd.xml.key" >> zextras.repo'
                         sh 'sudo mv zextras.repo /etc/yum.repos.d/zextras.repo'
                 }
-                sh 'sudo yap build rocky-9 rhel-only'
-                sh 'sudo yap build rocky-9 .'
+                script {
+                    if (BRANCH_NAME == 'devel') {
+                        def timestamp = new Date().format('yyyyMMddHHmmss')
+                        sh "sudo yap build rocky-9 rhel-only -r ${timestamp}"
+                        sh "sudo yap build rocky-9 . -r ${timestamp}"
+                    } else {
+                        sh 'sudo yap build rocky-9 .'
+                    }
+                }
                 stash includes: 'artifacts/x86_64/*el9*.rpm',
                 name: 'artifacts-rocky-9'
             }
