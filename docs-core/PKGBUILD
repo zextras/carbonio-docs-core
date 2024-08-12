@@ -13,7 +13,6 @@ depends__apt=(
   "libcap2-bin"
   "libepoxy0"
   "libgraphite2-3"
-  "libharfbuzz-icu0"
   "python3"
   "zip"
 )
@@ -34,7 +33,6 @@ makedepends__apt=(
   "libepoxy-dev"
   "libfontconfig1-dev"
   "libgraphite2-dev"
-  "libharfbuzz-dev"
   "libkrb5-dev"
   "libpam0g-dev"
   "libpcre3-dev"
@@ -57,7 +55,6 @@ depends__yum=(
   "carbonio-curl"
   "carbonio-openssl"
   "graphite2"
-  "harfbuzz-icu"
   "libepoxy"
   "nspr"
   "python3"
@@ -79,7 +76,6 @@ makedepends__yum=(
   "git"
   "gperf"
   "graphite2-devel"
-  "harfbuzz-devel"
   "libcap-devel"
   "libcap-ng-devel"
   "libepoxy-devel"
@@ -155,6 +151,7 @@ build() {
     --without-helppack-integration \
     --without-package-format \
     --without-system-cairo \
+    --without-system-harfbuzz \
     --without-system-openssl \
     --without-system-libpng \
     --without-system-libxml \
