@@ -107,6 +107,45 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                 }
             }
         }
+        stage('Ubuntu 24') {
+            agent {
+                node {
+                    label 'yap-agent-ubuntu-24.04-v2'
+                }
+            }
+            steps {
+                unstash 'project'
+                withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
+                    passwordVariable: 'SECRET',
+                    usernameVariable: 'USERNAME')]) {
+                        sh 'echo "machine zextras.jfrog.io" >> auth.conf'
+                        sh 'echo "login $USERNAME" >> auth.conf'
+                        sh 'echo "password $SECRET" >> auth.conf'
+                        sh 'sudo mv auth.conf /etc/apt'
+                }
+                sh '''
+sudo echo "deb https://zextras.jfrog.io/artifactory/ubuntu-devel noble main" > zextras.list
+sudo mv zextras.list /etc/apt/sources.list.d/
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243E584A21
+'''
+                script {
+                    if (BRANCH_NAME == 'devel') {
+                        def timestamp = new Date().format('yyyyMMddHHmmss')
+                        sh "sudo yap build ubuntu-noble . -r ${timestamp}"
+                    } else {
+                        sh 'sudo yap build ubuntu-noble .'
+                    }
+                }
+                stash includes: 'artifacts/*noble*.deb',
+                name: 'artifacts-ubuntu-noble'
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'artifacts/*noble*.deb',
+                    fingerprint: true
+                }
+            }
+        }
         stage('Rocky 8') {
             agent {
                 node {
@@ -190,6 +229,7 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
             steps {
                 unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-ubuntu-jammy'
+                unstash 'artifacts-ubuntu-noble'
                 unstash 'artifacts-rocky-8'
                 unstash 'artifacts-rocky-9'
 
@@ -209,6 +249,11 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                                 "pattern": "artifacts/*jammy*.deb",
                                 "target": "ubuntu-playground/pool/",
                                 "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
+                            },
+                            {
+                                "pattern": "artifacts/*noble*.deb",
+                                "target": "ubuntu-playground/pool/",
+                                "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64"
                             },
                             {
                                 "pattern": "artifacts/x86_64/(carbonio-poco)-(*).el8.x86_64.rpm",
@@ -253,6 +298,7 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
             steps {
                 unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-ubuntu-jammy'
+                unstash 'artifacts-ubuntu-noble'
                 unstash 'artifacts-rocky-8'
                 unstash 'artifacts-rocky-9'
 
@@ -272,6 +318,11 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                                 "pattern": "artifacts/*jammy*.deb",
                                 "target": "ubuntu-devel/pool/",
                                 "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
+                            },
+                            {
+                                "pattern": "artifacts/*noble*.deb",
+                                "target": "ubuntu-devel/pool/",
+                                "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64"
                             },
                             {
                                 "pattern": "artifacts/x86_64/(carbonio-poco)-(*).el8.x86_64.rpm",
@@ -316,6 +367,7 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
             steps {
                 unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-ubuntu-jammy'
+                unstash 'artifacts-ubuntu-noble'
                 unstash 'artifacts-rocky-8'
                 unstash 'artifacts-rocky-9'
 
@@ -339,6 +391,11 @@ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 52FD40243
                                 "pattern": "artifacts/*jammy*.deb",
                                 "target": "ubuntu-rc/pool/",
                                 "props": "deb.distribution=jammy;deb.component=main;deb.architecture=amd64"
+                            },
+                            {
+                                "pattern": "artifacts/*noble*.deb",
+                                "target": "ubuntu-rc/pool/",
+                                "props": "deb.distribution=noble;deb.component=main;deb.architecture=amd64"
                             }
                         ]
                     }"""
