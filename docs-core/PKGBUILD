@@ -1,6 +1,6 @@
 pkgname="carbonio-docs-core"
-pkgver="23.05.12"
-pkgrel="2"
+pkgver="23.05.17"
+pkgrel="1"
 pkgdesc="Core components for Docs Server"
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
@@ -103,10 +103,9 @@ source=(
   "make-pyuno-work-with-system-wide-module-install.diff"
   "openoffice.lst.in.append"
 )
-sha256sums=(
-  "SKIP"
-  "9f151e6e23ce75da475a2922ca091853e712f28da694b1d90d952b1290a6d846"
-  "98f41a0f9cda7bfbee46dfb78fcc12331404276f4bdf7763e090dd9b0d524076"
+sha256sums=('644d511bf00e18126b77d0d2f6745de67af5bc14a739564d88af401081010b89'
+  '9f151e6e23ce75da475a2922ca091853e712f28da694b1d90d952b1290a6d846'
+  '98f41a0f9cda7bfbee46dfb78fcc12331404276f4bdf7763e090dd9b0d524076'
 )
 
 build() {
