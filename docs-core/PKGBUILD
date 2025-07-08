@@ -1,5 +1,5 @@
 pkgname="carbonio-docs-core"
-pkgver="23.05.19"
+pkgver="25.04.3"
 pkgrel="1"
 pkgdesc="Core components for Docs Server"
 maintainer="Zextras <packages@zextras.com>"
@@ -99,17 +99,16 @@ makedepends__yum=(
   "zip"
 )
 source=(
-  "https://github.com/LibreOffice/core/archive/cp-${pkgver}-1.tar.gz"
+  "https://github.com/LibreOffice/core/archive/cp-${pkgver}-2.tar.gz"
   "make-pyuno-work-with-system-wide-module-install.diff"
   "openoffice.lst.in.append"
 )
-sha256sums=('77965cec3cba00c7ce073ee36a452816030067906a15f5d3be98fd527f0a90e7'
+sha256sums=('ee317034baa89790a2aebab23f70252ea3be9e2f8e5dc6ecbbef39208cd79509'
   '9f151e6e23ce75da475a2922ca091853e712f28da694b1d90d952b1290a6d846'
-  '98f41a0f9cda7bfbee46dfb78fcc12331404276f4bdf7763e090dd9b0d524076'
-)
+  '98f41a0f9cda7bfbee46dfb78fcc12331404276f4bdf7763e090dd9b0d524076')
 
 build() {
-  cd "${srcdir}/core-cp-${pkgver}-1"
+  cd "${srcdir}/core-cp-${pkgver}-2"
   if [ ! -d external/tarballs ]; then
     mkdir external/tarballs/
 
@@ -190,7 +189,6 @@ build() {
     --disable-postgresql-sdbc \
     --disable-firebird-sdbc \
     --disable-randr \
-    --enable-ext-numbertext \
     --enable-epm \
     --enable-python=system \
     --disable-online-update \
@@ -209,7 +207,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/core-cp-${pkgver}-1"
+  cd "${srcdir}/core-cp-${pkgver}-2"
 
   install -dm755 "${pkgdir}/opt/zextras/docs/core"
   cp -r instdir/* "${pkgdir}"/opt/zextras/docs/core
