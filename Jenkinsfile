@@ -24,46 +24,6 @@ pipeline {
                 stash includes: '**', name: 'project'
             }
         }
-        stage('Ubuntu 20') {
-            agent {
-                node {
-                    label 'yap-ubuntu-20-v1'
-                }
-            }
-            steps {
-                container('yap') {
-                    unstash 'project'
-                    withCredentials([usernamePassword(credentialsId: 'artifactory-jenkins-gradle-properties-splitted',
-                        passwordVariable: 'SECRET',
-                        usernameVariable: 'USERNAME')]) {
-                            sh 'echo "machine zextras.jfrog.io" >> auth.conf'
-                            sh 'echo "login $USERNAME" >> auth.conf'
-                            sh 'echo "password $SECRET" >> auth.conf'
-                            sh 'sudo mv auth.conf /etc/apt'
-                    }
-                    sh '''
-sudo echo "deb [trusted=yes] https://zextras.jfrog.io/artifactory/ubuntu-rc focal main" > zextras.list
-sudo mv zextras.list /etc/apt/sources.list.d/
-'''
-                    script {
-                        if (BRANCH_NAME == 'devel') {
-                            def timestamp = new Date().format('yyyyMMddHHmmss')
-                            sh "sudo yap build ubuntu-focal . -r ${timestamp}"
-                        } else {
-                            sh 'sudo yap build ubuntu-focal .'
-                        }
-                    }
-                    stash includes: 'artifacts/*focal*.deb',
-                    name: 'artifacts-ubuntu-focal'
-                }
-            }
-            post {
-                always {
-                    archiveArtifacts artifacts: 'artifacts/*focal*.deb',
-                    fingerprint: true
-                }
-            }
-        }
         stage('Ubuntu 22') {
             agent {
                 node {
@@ -134,7 +94,7 @@ sudo mv zextras.list /etc/apt/sources.list.d/
                         }
                     }
                     stash includes: 'artifacts/*noble*.deb',
-                    name: 'artifacts-ubuntu-noble'                    
+                    name: 'artifacts-ubuntu-noble'
                 }
             }
             post {
@@ -157,6 +117,7 @@ sudo mv zextras.list /etc/apt/sources.list.d/
                         passwordVariable: 'SECRET',
                         usernameVariable: 'USERNAME')]) {
                             sh 'echo "[Zextras]" > zextras.repo'
+                            sh 'echo "name=Zextras" >> zextras.repo'
                             sh 'echo "baseurl=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/centos8-rc/" >> zextras.repo'
                             sh 'echo "enabled=1" >> zextras.repo'
                             sh 'echo "gpgcheck=0" >> zextras.repo'
@@ -174,7 +135,7 @@ sudo mv zextras.list /etc/apt/sources.list.d/
                         }
                     }
                     stash includes: 'artifacts/*el8*.rpm',
-                    name: 'artifacts-rocky-8'                    
+                    name: 'artifacts-rocky-8'
                 }
             }
             post {
@@ -197,6 +158,7 @@ sudo mv zextras.list /etc/apt/sources.list.d/
                         passwordVariable: 'SECRET',
                         usernameVariable: 'USERNAME')]) {
                             sh 'echo "[Zextras]" > zextras.repo'
+                            sh 'echo "name=Zextras" >> zextras.repo'
                             sh 'echo "baseurl=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/rhel9-rc/" >> zextras.repo'
                             sh 'echo "enabled=1" >> zextras.repo'
                             sh 'echo "gpgcheck=0" >> zextras.repo'
@@ -214,7 +176,7 @@ sudo mv zextras.list /etc/apt/sources.list.d/
                         }
                     }
                     stash includes: 'artifacts/*el9*.rpm',
-                    name: 'artifacts-rocky-9'                    
+                    name: 'artifacts-rocky-9'
                 }
             }
             post {
@@ -231,7 +193,6 @@ sudo mv zextras.list /etc/apt/sources.list.d/
                 }
             }
             steps {
-                unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-ubuntu-jammy'
                 unstash 'artifacts-ubuntu-noble'
                 unstash 'artifacts-rocky-8'
@@ -244,11 +205,6 @@ sudo mv zextras.list /etc/apt/sources.list.d/
                     buildInfo = Artifactory.newBuildInfo()
                     uploadSpec = """{
                         "files": [
-                            {
-                                "pattern": "artifacts/*focal*.deb",
-                                "target": "ubuntu-playground/pool/",
-                                "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-                            },
                             {
                                 "pattern": "artifacts/*jammy*.deb",
                                 "target": "ubuntu-playground/pool/",
@@ -300,7 +256,6 @@ sudo mv zextras.list /etc/apt/sources.list.d/
                 branch 'devel'
             }
             steps {
-                unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-ubuntu-jammy'
                 unstash 'artifacts-ubuntu-noble'
                 unstash 'artifacts-rocky-8'
@@ -313,11 +268,6 @@ sudo mv zextras.list /etc/apt/sources.list.d/
                     buildInfo = Artifactory.newBuildInfo()
                     uploadSpec = """{
                         "files": [
-                            {
-                                "pattern": "artifacts/*focal*.deb",
-                                "target": "ubuntu-devel/pool/",
-                                "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-                            },
                             {
                                 "pattern": "artifacts/*jammy*.deb",
                                 "target": "ubuntu-devel/pool/",
@@ -369,7 +319,6 @@ sudo mv zextras.list /etc/apt/sources.list.d/
                 buildingTag()
             }
             steps {
-                unstash 'artifacts-ubuntu-focal'
                 unstash 'artifacts-ubuntu-jammy'
                 unstash 'artifacts-ubuntu-noble'
                 unstash 'artifacts-rocky-8'
@@ -386,11 +335,6 @@ sudo mv zextras.list /etc/apt/sources.list.d/
                     buildInfo.name += "-ubuntu"
                     uploadSpec = """{
                         "files": [
-                            {
-                                "pattern": "artifacts/*focal*.deb",
-                                "target": "ubuntu-rc/pool/",
-                                "props": "deb.distribution=focal;deb.component=main;deb.architecture=amd64;vcs.revision=${env.GIT_COMMIT}"
-                            },
                             {
                                 "pattern": "artifacts/*jammy*.deb",
                                 "target": "ubuntu-rc/pool/",
