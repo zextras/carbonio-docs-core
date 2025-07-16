@@ -22,6 +22,7 @@ makedepends__apt=(
   "bison"
   "carbonio-curl"
   "carbonio-openssl"
+  "clang"
   "flex"
   "fontconfig"
   "gettext"
@@ -39,6 +40,7 @@ makedepends__apt=(
   "libpng-dev"
   "libpython3-dev"
   "libtool"
+  "llvm"
   "m4"
   "make"
   "nasm"
@@ -66,6 +68,7 @@ makedepends__yum=(
   "bzip2"
   "carbonio-curl"
   "carbonio-openssl"
+  "clang"
   "cpio"
   "cpp"
   "cppunit-devel"
@@ -82,6 +85,7 @@ makedepends__yum=(
   "libpng-devel"
   "libtool"
   "libX11-devel"
+  "llvm"
   "m4"
   "nasm"
   "nodejs"
@@ -135,6 +139,9 @@ build() {
   cat ../openoffice.lst.in.append >>instsetoo_native/util/openoffice.lst.in
 
   sed -i "s/: check-if-root/:/" Makefile.in
+
+  export CC=clang
+  export CXX=clang++
 
   bash ./autogen.sh --libdir=/opt/zextras/docs \
     --prefix=/opt/zextras/docs \

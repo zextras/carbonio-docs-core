@@ -117,6 +117,7 @@ sudo mv zextras.list /etc/apt/sources.list.d/
                         passwordVariable: 'SECRET',
                         usernameVariable: 'USERNAME')]) {
                             sh 'echo "[Zextras]" > zextras.repo'
+                            sh 'echo "name=Zextras" >> zextras.repo'
                             sh 'echo "baseurl=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/centos8-rc/" >> zextras.repo'
                             sh 'echo "enabled=1" >> zextras.repo'
                             sh 'echo "gpgcheck=0" >> zextras.repo'
@@ -157,6 +158,7 @@ sudo mv zextras.list /etc/apt/sources.list.d/
                         passwordVariable: 'SECRET',
                         usernameVariable: 'USERNAME')]) {
                             sh 'echo "[Zextras]" > zextras.repo'
+                            sh 'echo "name=Zextras" >> zextras.repo'
                             sh 'echo "baseurl=https://$USERNAME:$SECRET@zextras.jfrog.io/artifactory/rhel9-rc/" >> zextras.repo'
                             sh 'echo "enabled=1" >> zextras.repo'
                             sh 'echo "gpgcheck=0" >> zextras.repo'
