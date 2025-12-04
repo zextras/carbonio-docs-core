@@ -3,7 +3,7 @@
 # Please have a look at:
 # https://git.rockylinux.org/staging/rpms/libepoxy/-/blob/r8/SPECS/libepoxy.spec
 pkgname="libepoxy"
-pkgver="1.5.2"
+pkgver="1.5.2" # renovate: datasource=github-tags depName=anholt/libepoxy extractVersion=^v?(?<version>.+)$
 pkgrel="1"
 pkgdesc="epoxy runtime library"
 license=("MIT")
@@ -21,10 +21,10 @@ makedepends=(
   "xorg-x11-server-Xvfb"
 )
 
-source=("https://github.com/anholt/libepoxy/releases/download/${pkgver}/${pkgname}-${pkgver}.tar.xz")
-sha256sums=(
-  "a9562386519eb3fd7f03209f279f697a8cba520d3c155d6e253c3e138beca7d8"
+source=(
+  "https://github.com/anholt/libepoxy/archive/refs/tags/${pkgver}.tar.gz"
 )
+sha256sums=('1ffc3ffe0567f986ff5731d4ef3a3765e0a4f9d642fffdae303362567eecd689')
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"
