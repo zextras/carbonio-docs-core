@@ -1,5 +1,5 @@
 pkgname="carbonio-docs-core"
-pkgver="25.04.3"
+pkgver="25.04.3" # renovate: datasource=github-tags depName=LibreOffice/core
 pkgrel="1"
 pkgdesc="Core components for Docs Server"
 maintainer="Zextras <packages@zextras.com>"
