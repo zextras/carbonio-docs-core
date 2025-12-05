@@ -1,11 +1,70 @@
 # SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
 #
 # SPDX-License-Identifier: CC0-1.0
-artifacts
-build
-pkgs
-start
+
+# Build artifacts
+artifacts/
+build/
+pkgs/
+start/
 *.target
+
+# Package files
 *.deb
 *.rpm
 *.tar.gz
+*.tar.xz
+*.pkg.tar.zst
+
+# Build directories
+srcdir/
+pkgdir/
+external/tarballs/
+
+# Temporary files
+*.tmp
+*.log
+*.swp
+*.swo
+*~
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build system files
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+config.log
+config.status
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Jenkins
+.jenkins/
+workspace/
+
+# Authentication files (should not be committed)
+auth.conf
+*.repo
+zextras.list
