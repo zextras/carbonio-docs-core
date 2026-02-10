@@ -1,97 +1,88 @@
+<!--
+SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+
+SPDX-License-Identifier: CC-BY-NC-SA-4.0
+-->
+
 # Carbonio Docs Core
 
-Carbonio Docs Core package build repository based on LibreOffice core components.
+Carbonio Docs Core is the build and packaging repository for the LibreOffice-based document processing engine that powers the Zextras Carbonio Docs collaborative editing feature. It compiles a headless, server-optimized LibreOffice core along with the POCO C++ networking libraries, producing DEB and RPM packages for deployment.
 
 ## Overview
 
-This repository contains packaging definitions and build configurations for Carbonio Docs Core, which provides the core components for the Docs Server. The project is based on LibreOffice and is customized for the Zextras Carbonio suite.
+This repository contains packaging definitions (PKGBUILD files) and build configurations for two main components:
 
-## Components
+- **docs-core** - A customized, headless LibreOffice core (v25.04.3) configured for server-side document processing. GUI, desktop integration, and optional features are disabled to produce a lean document conversion and rendering engine.
+- **poco** - The POCO C++ class libraries (v1.14.1) for network-centric applications, required as a dependency by Carbonio Docs Server.
 
-- **docs-core**: Main LibreOffice-based core components for document processing
-- **poco**: C++ class libraries for network-centric applications
+Packages are installed under `/opt/zextras/docs/` with LibreOfficeKit headers in `/opt/zextras/common/include/LibreOfficeKit` and PyUNO Python bindings symlinked into the system Python path.
 
-## Build System
-
-The project uses a Jenkins-based CI/CD pipeline with support for multiple Linux distributions:
-
-### Supported Distributions
-- Ubuntu Jammy (22.04)
-- Ubuntu Noble (24.04) 
-- Rocky Linux 8
-- Rocky Linux 9
-
-### Package Formats
-- DEB packages for Ubuntu/Debian
-- RPM packages for RHEL-based distributions
-
-## Repository Structure
-
-```
-carbonio-docs-core/
-├── .github/                 # GitHub configuration
-│   ├── CODEOWNERS          # Code ownership rules
-│   └── renovate.json       # Renovate bot configuration
-├── docs-core/              # Main docs-core package
-│   ├── PKGBUILD           # Arch Linux build script
-│   ├── *.diff             # Build patches
-│   └── *.in              # Configuration templates
-├── poco/                  # POCO library package
-│   └── PKGBUILD           # Arch Linux build script
-├── rhel-only/             # RHEL-specific packages
-│   ├── libepoxy/          # Epoxy OpenGL library
-│   └── polib/             # Python PO file library
-├── Jenkinsfile            # CI/CD pipeline definition
-├── yap.json              # Build configuration
-└── yap.json.license      # License information
-```
-
-## Building
+## Quick Start
 
 ### Prerequisites
 
-The build system requires various development tools and libraries depending on the target distribution:
+Building requires `yap` and `podman` installed on the host system. The PKGBUILD files declare all distribution-specific build and runtime dependencies, which are resolved automatically during the build process.
 
-**For Ubuntu (APT):**
-- Build tools: autoconf, automake, bison, clang, flex, etc.
-- Libraries: carbonio-curl, carbonio-openssl, libepoxy, etc.
+**Ubuntu (APT) build dependencies** include: autoconf, automake, bison, clang, flex, cmake, ninja-build, and various development libraries.
 
-**For RHEL (YUM):**
-- Build tools: automake, bison, clang, cmake, ninja, etc.
-- Libraries: carbonio-curl, carbonio-openssl, graphite2, etc.
+**RHEL (YUM) build dependencies** include: automake, bison, clang, cmake, ninja-build, gcc-c++, and various development libraries.
 
-### Build Process
+See the `PKGBUILD` files in `docs-core/` and `poco/` for the complete dependency lists.
 
-1. The Jenkins pipeline checks out the source code
-2. Downloads external dependencies (dictionaries, help content, translations)
-3. Applies patches and configuration
-4. Builds using clang compiler with specific flags
-5. Packages the results for distribution
+### Dependencies
 
-## Configuration
+This project requires custom packages from
+[carbonio-thirds](https://github.com/zextras/carbonio-thirds) (e.g.
+`carbonio-openssl`, `carbonio-curl`). To build them locally:
 
-- **Build Directory**: `/tmp/`
-- **Output Directory**: `artifacts`
-- **Installation Prefix**: `/opt/zextras/docs/`
-- **Library Path**: `/opt/zextras/common/lib/`
+```bash
+git clone https://github.com/zextras/carbonio-thirds.git ../carbonio-thirds
+cd ../carbonio-thirds
+make build TARGET=ubuntu-noble
+cd -
+```
 
-## Dependencies
+Then pass the artifacts directory when building this project (see below).
 
-### Runtime Dependencies
-- carbonio-curl
-- carbonio-openssl
-- libepoxy
-- python3
-- Various system libraries
+### Building Packages
 
-### Build Dependencies
-- clang/llvm toolchain
-- cmake/ninja build system
-- Various development libraries
+```bash
+# Build all packages for Ubuntu 24.04 (with local dependencies)
+make build TARGET=ubuntu-noble DEPS_DIR=../carbonio-thirds/artifacts
 
-## Repository Management
+# Build for Rocky Linux 9
+make build TARGET=rocky-9 DEPS_DIR=../carbonio-thirds/artifacts
+```
 
-- **Owner**: Zextras <packages@zextras.com>
-- **CI/CD**: Jenkins with GitHub integration
-- **Dependency Updates**: Automated via Renovate bot
-- **Artifact Repository**: Zextras Artifactory
+### Supported Targets
+
+- `ubuntu-jammy` - Ubuntu 22.04 LTS
+- `ubuntu-noble` - Ubuntu 24.04 LTS
+- `rocky-8` - Rocky Linux 8
+- `rocky-9` - Rocky Linux 9
+
+Run `make help` to see all available options.
+
+## Installation
+
+These packages are distributed as part of the [Carbonio platform](https://zextras.com/carbonio). To install:
+
+### Ubuntu (Jammy/Noble)
+
+```bash
+apt-get install <package-name>
+```
+
+### Rocky Linux (8/9)
+
+```bash
+yum install <package-name>
+```
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for information on how to contribute to this project.
+
+## License
+
+This project is licensed under the GNU Affero General Public License v3.0 - see the [LICENSE.md](LICENSE.md) file for details.
