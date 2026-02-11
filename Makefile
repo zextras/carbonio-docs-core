@@ -6,7 +6,7 @@
 
 # Configuration
 YAP_IMAGE_PREFIX ?= docker.io/m0rf30/yap
-YAP_VERSION ?= 1.47
+YAP_VERSION ?= 1.48
 CONTAINER_RUNTIME ?= $(shell command -v podman >/dev/null 2>&1 && echo podman || echo docker)
 
 # Build options
@@ -34,7 +34,7 @@ DEPS_MOUNT =
 DEPS_ARG = none
 endif
 
-.PHONY: help build clean
+.PHONY: help build build-rhel-only clean
 
 .DEFAULT_GOAL := help
 
@@ -48,6 +48,7 @@ help:
 	@echo "Targets:"
 	@echo "  help           Show this help message"
 	@echo "  build          Build all packages (poco + docs-core)"
+	@echo "  build-rhel-only Build RHEL-only packages (Rocky only)"
 	@echo "  clean          Remove build artifacts"
 	@echo ""
 	@echo "Options:"
@@ -63,12 +64,26 @@ help:
 	@echo "  # Build with dependencies (community contributors)"
 	@echo "  make build TARGET=ubuntu-jammy DEPS_DIR=../carbonio-thirds/artifacts"
 	@echo ""
+	@echo "  # Build RHEL-only packages for Rocky 8"
+	@echo "  make build-rhel-only TARGET=rocky-8 DEPS_DIR=../carbonio-thirds/artifacts"
+	@echo ""
 
 ## build: Build all packages (poco + docs-core)
 build:
 	@mkdir -p artifacts $(CCACHE_DIR)
 	$(CONTAINER_RUNTIME) run $(CONTAINER_OPTS) $(DEPS_MOUNT) $(YAP_IMAGE) \
 		/project/build-in-container.sh $(DEPS_ARG) $(TARGET)
+
+## build-rhel-only: Build RHEL-only packages (Rocky only)
+build-rhel-only:
+	@if ! echo "$(TARGET)" | grep -q "^rocky-"; then \
+		echo "Error: build-rhel-only is only supported for Rocky targets"; \
+		echo "Current TARGET: $(TARGET)"; \
+		exit 1; \
+	fi
+	@mkdir -p artifacts $(CCACHE_DIR)
+	$(CONTAINER_RUNTIME) run $(CONTAINER_OPTS) $(DEPS_MOUNT) $(YAP_IMAGE) \
+		/project/build-in-container.sh $(DEPS_ARG) $(TARGET) rhel-only
 
 ## clean: Remove build artifacts
 clean:
