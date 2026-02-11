@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
 pkgname="python3-polib"
 pkgver="1.1.1" # renovate: datasource=pypi depName=polib
 pkgrel="1"
@@ -7,6 +11,7 @@ url="https://zextras.com"
 section="mail"
 priority="optional"
 arch=('x86_64')
+license=("MIT")
 depends__yum=(
   "python3"
 )
@@ -14,7 +19,9 @@ makedepends__yum=(
   "python3"
   "python3-setuptools"
 )
-source=("https://pypi.io/packages/source/p/polib/polib-${pkgver}.tar.gz")
+source=(
+  "https://pypi.io/packages/source/p/polib/polib-${pkgver}.tar.gz"
+  )
 sha256sums=(
   "e02c355ae5e054912e3b0d16febc56510eff7e49d60bf22aecb463bd2f2a2dfa"
 )

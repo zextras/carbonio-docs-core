@@ -1,3 +1,7 @@
+# SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
 # This package is provided only by a 3rd-party repo (OKey) on
 # RHEL8 (on non-enterprise ones is directly available)
 # Please have a look at:
@@ -24,7 +28,9 @@ makedepends=(
 source=(
   "https://github.com/anholt/libepoxy/archive/refs/tags/${pkgver}.tar.gz"
 )
-sha256sums=('1ffc3ffe0567f986ff5731d4ef3a3765e0a4f9d642fffdae303362567eecd689')
+sha256sums=(
+  '1ffc3ffe0567f986ff5731d4ef3a3765e0a4f9d642fffdae303362567eecd689'
+)
 
 build() {
   cd "${srcdir}/${pkgname}-${pkgver}"

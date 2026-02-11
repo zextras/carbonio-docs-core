@@ -1,5 +1,9 @@
+// SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+//
+// SPDX-License-Identifier: AGPL-3.0-only
+
 library(
-    identifier: 'jenkins-lib-common@1.1.2',
+    identifier: 'jenkins-lib-common@1.3.0',
     retriever: modernSCM([
         $class: 'GitSCMSource',
         credentialsId: 'jenkins-integration-with-github-account',
