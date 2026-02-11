@@ -9,11 +9,18 @@ set -e
 # This script runs INSIDE the container
 # It installs dependencies, prepares yap, and builds the package
 #
-# Usage (inside container): ./build-in-container.sh <deps-dir|none> <distro> <package-dir>
+# Usage (inside container): ./build-in-container.sh <deps-dir|none> <distro> [package-subdir]
 
 DEPS_DIR=$1
 DISTRO=$2
-PACKAGE_DIR=${3:-/project}
+PACKAGE_SUBDIR=$3
+
+# If a subdirectory is provided, append it to /project, otherwise use /project
+if [ -n "$PACKAGE_SUBDIR" ]; then
+    PACKAGE_DIR="/project/$PACKAGE_SUBDIR"
+else
+    PACKAGE_DIR="/project"
+fi
 
 if [ -z "$DISTRO" ]; then
     echo "Usage: $0 <deps-dir|none> <distro> [package-dir]"
@@ -21,23 +28,6 @@ if [ -z "$DISTRO" ]; then
 fi
 
 echo "==> Building $PACKAGE_DIR for $DISTRO"
-
-# Install Node.js (not available in default repos)
-echo "==> Installing Curl and Node.js"
-if [ -f /etc/debian_version ]; then
-    apt-get update
-    apt-get install -y ca-certificates gnupg wget
-    mkdir -p /etc/apt/keyrings
-    wget -qO- https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key \
-        | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" \
-        > /etc/apt/sources.list.d/nodesource.list
-    apt-get update
-    apt-get install -y curl nodejs
-elif [ -f /etc/redhat-release ]; then
-    yum install -y https://rpm.nodesource.com/pub_22.x/nodistro/repo/nodesource-release-nodistro-1.noarch.rpm
-    yum install -y curl nodejs
-fi
 
 # Install dependencies if provided
 if [ "$DEPS_DIR" != "none" ] && [ -n "$DEPS_DIR" ]; then
