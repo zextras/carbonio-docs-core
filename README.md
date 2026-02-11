@@ -21,7 +21,9 @@ Packages are installed under `/opt/zextras/docs/` with LibreOfficeKit headers in
 
 ### Prerequisites
 
-Building requires `yap` and `podman` installed on the host system. The PKGBUILD files declare all distribution-specific build and runtime dependencies, which are resolved automatically during the build process.
+Building requires `yap` (version 1.48 or later) and `podman` installed on the host system. The PKGBUILD files declare all distribution-specific build and runtime dependencies, which are resolved automatically during the build process.
+
+**Note:** This project requires YAP version 1.48 or later.
 
 **Ubuntu (APT) build dependencies** include: autoconf, automake, bison, clang, flex, cmake, ninja-build, and various development libraries.
 
