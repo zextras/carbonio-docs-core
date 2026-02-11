@@ -7,7 +7,7 @@
 # Please have a look at:
 # https://git.rockylinux.org/staging/rpms/libepoxy/-/blob/r8/SPECS/libepoxy.spec
 pkgname="libepoxy"
-pkgver="1.5.2" # renovate: datasource=github-tags depName=anholt/libepoxy extractVersion=^v?(?<version>.+)$
+pkgver="1.5.10" # renovate: datasource=github-tags depName=anholt/libepoxy extractVersion=^v?(?<version>.+)$
 pkgrel="1"
 pkgdesc="epoxy runtime library"
 license=("MIT")
@@ -29,7 +29,7 @@ source=(
   "https://github.com/anholt/libepoxy/archive/refs/tags/${pkgver}.tar.gz"
 )
 sha256sums=(
-  '1ffc3ffe0567f986ff5731d4ef3a3765e0a4f9d642fffdae303362567eecd689'
+  'a7ced37f4102b745ac86d6a70a9da399cc139ff168ba6b8002b4d8d43c900c15'
 )
 
 build() {
