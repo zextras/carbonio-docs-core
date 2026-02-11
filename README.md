@@ -52,6 +52,9 @@ make build TARGET=ubuntu-noble DEPS_DIR=../carbonio-thirds/artifacts
 
 # Build for Rocky Linux 9
 make build TARGET=rocky-9 DEPS_DIR=../carbonio-thirds/artifacts
+
+# Build RHEL-only packages (e.g., libepoxy) for Rocky Linux 8
+make build-rhel-only TARGET=rocky-8 DEPS_DIR=../carbonio-thirds/artifacts
 ```
 
 ### Supported Targets
@@ -60,6 +63,12 @@ make build TARGET=rocky-9 DEPS_DIR=../carbonio-thirds/artifacts
 - `ubuntu-noble` - Ubuntu 24.04 LTS
 - `rocky-8` - Rocky Linux 8
 - `rocky-9` - Rocky Linux 9
+
+### Build Commands
+
+- `make build` - Build all packages (poco + docs-core)
+- `make build-rhel-only` - Build RHEL-only packages (Rocky only, skips Node.js installation)
+- `make clean` - Remove build artifacts
 
 Run `make help` to see all available options.
 
