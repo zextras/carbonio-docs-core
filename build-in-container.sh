@@ -37,7 +37,13 @@ if [ "$DEPS_DIR" != "none" ] && [ -n "$DEPS_DIR" ]; then
         apt-get update
         find "$DEPS_DIR" -name '*.deb' -exec dpkg -i {} + || apt-get install -f -y
     elif [ -f /etc/redhat-release ]; then
-        find "$DEPS_DIR" -name '*.rpm' -exec rpm -ivh --force {} +
+        # Enable EPEL for additional dependencies
+        echo "==> Enabling EPEL repository"
+        yum install -y epel-release
+        
+        # Use yum localinstall to resolve dependencies automatically
+        echo "==> Installing RPM packages with dependency resolution"
+        yum install -y "$DEPS_DIR"/*.rpm
     else
         echo "Error: Unknown distribution"
         exit 1
