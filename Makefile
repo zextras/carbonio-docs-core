@@ -34,7 +34,7 @@ DEPS_MOUNT =
 DEPS_ARG = none
 endif
 
-.PHONY: help build build-rhel-only clean
+.PHONY: help build build-rhel-only debug-build clean
 
 .DEFAULT_GOAL := help
 
@@ -49,6 +49,7 @@ help:
 	@echo "  help           Show this help message"
 	@echo "  build          Build all packages (poco + docs-core)"
 	@echo "  build-rhel-only Build RHEL-only packages (Rocky only)"
+	@echo "  debug-build    Start interactive shell in build container"
 	@echo "  clean          Remove build artifacts"
 	@echo ""
 	@echo "Options:"
@@ -72,7 +73,7 @@ help:
 build:
 	@mkdir -p artifacts $(CCACHE_DIR)
 	$(CONTAINER_RUNTIME) run $(CONTAINER_OPTS) $(DEPS_MOUNT) $(YAP_IMAGE) \
-		/project/build-in-container.sh $(DEPS_ARG) $(TARGET)
+		/project/build-in-container.sh $(DEPS_ARG) $(TARGET) 2>&1 | tee build.log
 
 ## build-rhel-only: Build RHEL-only packages (Rocky only)
 build-rhel-only:
@@ -83,7 +84,21 @@ build-rhel-only:
 	fi
 	@mkdir -p artifacts $(CCACHE_DIR)
 	$(CONTAINER_RUNTIME) run $(CONTAINER_OPTS) $(DEPS_MOUNT) $(YAP_IMAGE) \
-		/project/build-in-container.sh $(DEPS_ARG) $(TARGET) rhel-only
+		/project/build-in-container.sh $(DEPS_ARG) $(TARGET) rhel-only 2>&1 | tee build-rhel-only.log
+
+## debug-build: Start interactive shell in build container for manual debugging
+debug-build:
+	@mkdir -p artifacts $(CCACHE_DIR)
+	@echo "Starting interactive shell in build container..."
+	@echo "Container info:"
+	@echo "  Image: $(YAP_IMAGE)"
+	@echo "  Target: $(TARGET)"
+	@echo "  Deps: $(DEPS_ARG)"
+	@echo ""
+	@echo "To run the build manually, execute:"
+	@echo "  /project/build-in-container.sh $(DEPS_ARG) $(TARGET)"
+	@echo ""
+	$(CONTAINER_RUNTIME) run $(CONTAINER_OPTS) $(DEPS_MOUNT) $(YAP_IMAGE)
 
 ## clean: Remove build artifacts
 clean:
