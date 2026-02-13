@@ -52,8 +52,8 @@ if [ "$DEPS_DIR" != "none" ] && [ -n "$DEPS_DIR" ]; then
 fi
 
 # Prepare yap
-echo "==> Running yap prepare $DISTRO -g"
-yap prepare "$DISTRO" -g
+echo "==> Running yap prepare $DISTRO"
+yap prepare "$DISTRO"
 
 # Build package
 echo "==> Running yap build $DISTRO $PACKAGE_DIR"
