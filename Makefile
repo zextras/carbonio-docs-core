@@ -6,7 +6,7 @@
 
 # Configuration
 YAP_IMAGE_PREFIX ?= docker.io/m0rf30/yap
-YAP_VERSION ?= 1.48
+YAP_VERSION ?= 1.49
 CONTAINER_RUNTIME ?= $(shell command -v podman >/dev/null 2>&1 && echo podman || echo docker)
 
 # Build options
