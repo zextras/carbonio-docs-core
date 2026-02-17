@@ -119,13 +119,6 @@ sha256sums=(
 )
 
 build() {
-  # Clean environment variables leaked from poco's build() through YAP's Go shell interpreter.
-  # DESTDIR: causes install-gdb-printers to prepend poco's pkgdir path
-  # LDFLAGS: causes ICU 75 to link against carbonio-icu-74 from /opt/zextras/common/lib
-  # CFLAGS: includes -I/opt/zextras/common/include which may cause header mismatches
-  unset DESTDIR
-  unset LDFLAGS
-  unset CFLAGS
   cd "${srcdir}/core-cp-${pkgver}-${_pkgrel}"
   if [ ! -d external/tarballs ]; then
     mkdir external/tarballs/
