@@ -7,9 +7,6 @@
         {
             "name": "polib",
             "install": true
-        },
-        {
-            "name": "libepoxy"
         }
     ]
 }

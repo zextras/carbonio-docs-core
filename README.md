@@ -55,7 +55,7 @@ make build TARGET=ubuntu-noble DEPS_DIR=../carbonio-thirds/artifacts
 # Build for Rocky Linux 9
 make build TARGET=rocky-9 DEPS_DIR=../carbonio-thirds/artifacts
 
-# Build RHEL-only packages (e.g., libepoxy) for Rocky Linux 8
+# Build RHEL-only packages (e.g., polib) for Rocky Linux 8
 make build-rhel-only TARGET=rocky-8 DEPS_DIR=../carbonio-thirds/artifacts
 ```
 
