@@ -16,7 +16,6 @@ depends__apt=(
 )
 makedepends__apt=(
   "autoconf"
-  "carbonio-openssl"
   "cmake"
   "ninja-build"
   "unixodbc-dev"
@@ -25,7 +24,6 @@ depends__yum=(
   "carbonio-openssl"
 )
 makedepends__yum=(
-  "carbonio-openssl"
   "cmake"
   "expat-devel"
   "gcc-c++"
