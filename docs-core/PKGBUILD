@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 pkgname="carbonio-docs-core"
-pkgver="25.04.8" # renovate: datasource=github-tags depName=LibreOffice/core
+pkgver="25.04.9" # renovate: datasource=github-tags depName=LibreOffice/core
 _pkgrel="3"
 pkgrel="1"
 pkgdesc="Core components for Docs Server"
