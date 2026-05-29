@@ -25,6 +25,7 @@ makedepends__apt=(
   "autoconf"
   "automake"
   "bison"
+  "bzip2"
   "carbonio-curl"
   "curl"
   "carbonio-openssl"
