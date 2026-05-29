@@ -127,6 +127,7 @@ sha256sums=(
 )
 
 build() {
+  export PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${PATH}"
   cd "${srcdir}/core-cp-${pkgver}-${_pkgrel}"
   if [ ! -d external/tarballs ]; then
     mkdir external/tarballs/
