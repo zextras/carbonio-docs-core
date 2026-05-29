@@ -63,13 +63,12 @@ pipeline {
                 jfrog 'jfrog-cli'
             }
             steps {
-                uploadStage(
-                    // packages need to be listed only for rocky
-                    'yapPaths': [
+                uploadStage([
+                    yapPaths: [
                         'rhel-only/yap.json',
                         'yap.json',
-                    ] as Set)
-                )
+                    ] as Set
+                ])
             }
         }
     }
