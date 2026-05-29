@@ -26,6 +26,7 @@ makedepends__apt=(
   "automake"
   "bison"
   "carbonio-curl"
+  "curl"
   "carbonio-openssl"
   "clang"
   "flex"
