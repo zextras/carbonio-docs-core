@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 library(
-    identifier: 'jenkins-lib-common@1.7.5',
+    identifier: 'jenkins-lib-common@v2.11.2',
     retriever: modernSCM([
         $class: 'GitSCMSource',
         credentialsId: 'jenkins-integration-with-github-account',
@@ -49,6 +49,13 @@ pipeline {
                     parallelBuilds: false,
                     prepare: true,
                 ])
+                buildStage([
+                    addCarbonioRepos: true,
+                    architecture: 'aarch64',
+                    distros: ['ubuntu-jammy'],
+                    parallelBuilds: false,
+                    prepare: true,
+                ])
             }
         }
 
@@ -58,11 +65,12 @@ pipeline {
             }
             steps {
                 uploadStage([
-                    // this works because packages need to be listed only for rocky
-                    packages: yapHelper.resolvePackageNamesFromFiles([
-                        'rhel-only/yap.json',
-                        'yap.json',
-                    ] as Set)
+                    yapPath: 'yap.json',
+                ])
+                uploadStage([
+                    architecture: 'aarch64',
+                    distros: ['ubuntu-jammy'],
+                    yapPath: 'yap.json',
                 ])
             }
         }

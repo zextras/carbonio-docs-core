@@ -10,18 +10,13 @@ maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
 section="mail"
 priority="optional"
-arch=('x86_64')
-depends__apt=(
-  "carbonio-openssl"
-)
+arch=('aarch64' 'x86_64')
+depends=("carbonio-openssl")
 makedepends__apt=(
   "autoconf"
   "cmake"
   "ninja-build"
   "unixodbc-dev"
-)
-depends__yum=(
-  "carbonio-openssl"
 )
 makedepends__yum=(
   "cmake"
@@ -61,10 +56,12 @@ build() {
     -DENABLE_APACHECONNECTOR=OFF \
     -DENABLE_REDIS=OFF \
     -DENABLE_ZIP=OFF \
+    -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+    -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
     -DCMAKE_INSTALL_PREFIX="/opt/zextras/common" \
     -DCMAKE_BUILD_TYPE=Release .
 
-  ninja -C build -j 8
+  ninja -C build
 }
 
 package() {
