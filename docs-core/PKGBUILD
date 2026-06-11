@@ -27,6 +27,7 @@ makedepends__apt=(
   "autoconf"
   "automake"
   "bison"
+  "bzip2"
   "clang"
   "flex"
   "fontconfig"
