@@ -45,7 +45,6 @@ makedepends__apt=(
   "libpng-dev"
   "libpython3-dev"
   "libtool"
-  "libxml2-utils"
   "libxslt1-dev"
   "llvm"
   "m4"
@@ -93,7 +92,6 @@ makedepends__yum=(
   "libpng-devel"
   "libtool"
   "libX11-devel"
-  "libxml2"
   "libxslt-devel"
   "llvm"
   "m4"
@@ -200,6 +198,10 @@ build() {
   # LO's --with-system-* resolves them through pkg-config.
   export CPPFLAGS="-I/opt/zextras/common/include ${CPPFLAGS}"
   export PKG_CONFIG_PATH="/opt/zextras/common/lib/pkgconfig:/opt/zextras/common/lib64/pkgconfig"
+
+  # xmllint comes from carbonio-libxml2 (installed under /opt/zextras/common),
+  # not from a distro libxml2 package. Point LO's AC_PATH_PROG(XMLLINT) at it.
+  export XMLLINT="/opt/zextras/common/bin/xmllint"
 
   _host_flag=""
   _build_flag=""
