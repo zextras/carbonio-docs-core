@@ -205,9 +205,10 @@ build() {
   # not from a distro libxml2 package. Point LO's AC_PATH_PROG(XMLLINT) at it.
   export XMLLINT="/opt/zextras/common/bin/xmllint"
 
-  # LO configure requires a wget/curl binary; use the one from carbonio-curl
-  # (under /opt/zextras/common) rather than a distro curl/wget package.
-  export CURL="/opt/zextras/common/bin/curl"
+  # LO configure's downloader check does `command -v curl` and ignores any
+  # pre-set $CURL, so the carbonio-curl binary must be on PATH. Put the
+  # carbonio common bin dir first; it also covers xmllint/xsltproc helpers.
+  export PATH="/opt/zextras/common/bin:${PATH}"
 
   _host_flag=""
   _build_flag=""
