@@ -57,6 +57,7 @@ makedepends__apt=(
   "python3-setuptools"
   "unzip"
   "uuid-runtime"
+  "xsltproc"
   "zip"
 )
 depends__yum=(
