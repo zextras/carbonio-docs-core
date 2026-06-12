@@ -3,7 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-only
 
 library(
-    identifier: 'jenkins-lib-common@1.3.1',
+    identifier: 'jenkins-lib-common@v2.11.2',
     retriever: modernSCM([
         $class: 'GitSCMSource',
         credentialsId: 'jenkins-integration-with-github-account',
@@ -32,9 +32,7 @@ pipeline {
         stage('Setup') {
             steps {
                 checkout scm
-                script {
-                    gitMetadata()
-                }
+                gitMetadata()
             }
         }
 
@@ -117,13 +115,10 @@ pipeline {
                 jfrog 'jfrog-cli'
             }
             steps {
-                uploadStage([
-                    // this works because packages need to be listed only for rocky
-                    packages: yapHelper.resolvePackageNamesFromFiles([
-                        'rhel-only/yap.json',
-                        'yap.json',
-                    ] as Set)
-                ])
+                uploadStage(yapPaths: [
+                    'rhel-only/yap.json',
+                    'yap.json',
+                ] as Set)
             }
         }
     }
