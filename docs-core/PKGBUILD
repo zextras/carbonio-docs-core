@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 pkgname="carbonio-docs-core"
-pkgver="25.04.8" # renovate: datasource=github-tags depName=LibreOffice/core
-_pkgrel="3"
+pkgver="25.04.9" # renovate: datasource=github-tags depName=LibreOffice/core
+_pkgrel="4"
 pkgrel="1"
 pkgdesc="Core components for Docs Server"
 maintainer="Zextras <packages@zextras.com>"
@@ -131,7 +131,7 @@ noextract=(
   "libreoffice-translations-${pkgver}.tar.gz"
 )
 sha256sums=(
-  '9915643e78dab20763f2085b1aa8418c6254ebb4aed337e6475d9c8ceee6ff48'
+  '417c9f47a6b0a6565be71907ab9e59623faf2f4786b403ce1b90fe61570a404a'
   'SKIP'
   'SKIP'
   'SKIP'
