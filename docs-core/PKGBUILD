@@ -25,9 +25,11 @@ makedepends__apt=(
   "autoconf"
   "automake"
   "bison"
+  "bzip2"
   "carbonio-curl"
   "carbonio-openssl"
   "clang"
+  "curl"
   "flex"
   "fontconfig"
   "gettext"
@@ -45,9 +47,10 @@ makedepends__apt=(
   "libpng-dev"
   "libpython3-dev"
   "libtool"
+  "libxslt1-dev"
+  "libzstd-dev"
   "llvm"
   "m4"
-  "make"
   "nasm"
   "pkg-config"
   "python3"
@@ -56,6 +59,7 @@ makedepends__apt=(
   "python3-setuptools"
   "unzip"
   "uuid-runtime"
+  "xsltproc"
   "zip"
 )
 depends__yum=(
@@ -75,6 +79,7 @@ makedepends__yum=(
   "carbonio-openssl"
   "clang"
   "cpio"
+  "curl"
   "cpp"
   "cppunit-devel"
   "cups-devel"
@@ -90,6 +95,8 @@ makedepends__yum=(
   "libpng-devel"
   "libtool"
   "libX11-devel"
+  "libxslt-devel"
+  "libzstd-devel"
   "llvm"
   "m4"
   "nasm"
@@ -109,11 +116,25 @@ makedepends__yum=(
 )
 source=(
   "https://github.com/LibreOffice/core/archive/cp-${pkgver}-${_pkgrel}.tar.gz"
+  "libreoffice-dictionaries-${pkgver}.tar.gz::https://github.com/LibreOffice/dictionaries/archive/cp-${pkgver}-${_pkgrel}.tar.gz"
+  "libreoffice-help-${pkgver}.tar.gz::https://github.com/LibreOffice/help/archive/cp-${pkgver}-${_pkgrel}.tar.gz"
+  "libreoffice-translations-${pkgver}.tar.gz::https://github.com/LibreOffice/translations/archive/cp-${pkgver}-${_pkgrel}.tar.gz"
   "make-pyuno-work-with-system-wide-module-install.diff"
   "openoffice.lst.in.append"
 )
+# The dictionaries/help/translations tarballs are kept as downloaded archives
+# (not unpacked) so build() can place them into external/tarballs/ under the
+# names LO's get-submodules expects, avoiding network access at build time.
+noextract=(
+  "libreoffice-dictionaries-${pkgver}.tar.gz"
+  "libreoffice-help-${pkgver}.tar.gz"
+  "libreoffice-translations-${pkgver}.tar.gz"
+)
 sha256sums=(
   '9915643e78dab20763f2085b1aa8418c6254ebb4aed337e6475d9c8ceee6ff48'
+  'SKIP'
+  'SKIP'
+  'SKIP'
   '9f151e6e23ce75da475a2922ca091853e712f28da694b1d90d952b1290a6d846'
   '98f41a0f9cda7bfbee46dfb78fcc12331404276f4bdf7763e090dd9b0d524076'
 )
@@ -123,16 +144,12 @@ build() {
   if [ ! -d external/tarballs ]; then
     mkdir external/tarballs/
 
-    # Save with the names the Makefile's get-submodules expects (*.tar.xz, no patch release).
-    # This way fetch_Download_item_unchecked finds the file and skips the download from
-    # download.documentfoundation.org (which 404s for Collabora fork versions).
-    # tar auto-detects compression, so the .tar.xz extension works despite being .tar.gz content.
-    curl -L -C - "https://github.com/LibreOffice/dictionaries/archive/cp-${pkgver}-${_pkgrel}.tar.gz" \
-      -o "external/tarballs/libreoffice-dictionaries-${pkgver}.tar.xz"
-    curl -L -C - "https://github.com/LibreOffice/help/archive/cp-${pkgver}-${_pkgrel}.tar.gz" \
-      -o "external/tarballs/libreoffice-help-${pkgver}.tar.xz"
-    curl -L -C - "https://github.com/LibreOffice/translations/archive/cp-${pkgver}-${_pkgrel}.tar.gz" \
-      -o "external/tarballs/libreoffice-translations-${pkgver}.tar.xz"
+    cp "${srcdir}/libreoffice-dictionaries-${pkgver}.tar.gz" \
+      "external/tarballs/libreoffice-dictionaries-${pkgver}.tar.xz"
+    cp "${srcdir}/libreoffice-help-${pkgver}.tar.gz" \
+      "external/tarballs/libreoffice-help-${pkgver}.tar.xz"
+    cp "${srcdir}/libreoffice-translations-${pkgver}.tar.gz" \
+      "external/tarballs/libreoffice-translations-${pkgver}.tar.xz"
   fi
 
   tar xf "external/tarballs/libreoffice-dictionaries-${pkgver}.tar.xz" \
