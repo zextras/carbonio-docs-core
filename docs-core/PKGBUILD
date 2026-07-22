@@ -3,8 +3,8 @@
 # SPDX-License-Identifier: AGPL-3.0-only
 
 pkgname="carbonio-docs-core"
-pkgver="25.04.9" # renovate: datasource=github-tags depName=LibreOffice/core
-_pkgrel="4"
+pkgver="26.04.2" # renovate: datasource=github-tags depName=CollaboraOnline/online.mirror
+_pkgrel="3"
 pkgrel="1"
 pkgdesc="Core components for Docs Server"
 maintainer="Zextras <packages@zextras.com>"
@@ -115,56 +115,22 @@ makedepends__yum=(
   "zip"
 )
 source=(
-  "https://github.com/LibreOffice/core/archive/cp-${pkgver}-${_pkgrel}.tar.gz"
-  "libreoffice-dictionaries-${pkgver}.tar.gz::https://github.com/LibreOffice/dictionaries/archive/cp-${pkgver}-${_pkgrel}.tar.gz"
-  "libreoffice-help-${pkgver}.tar.gz::https://github.com/LibreOffice/help/archive/cp-${pkgver}-${_pkgrel}.tar.gz"
-  "libreoffice-translations-${pkgver}.tar.gz::https://github.com/LibreOffice/translations/archive/cp-${pkgver}-${_pkgrel}.tar.gz"
+  "https://github.com/CollaboraOnline/online.mirror/archive/cp-${pkgver}-${_pkgrel}.tar.gz"
   "make-pyuno-work-with-system-wide-module-install.diff"
   "openoffice.lst.in.append"
 )
-# The dictionaries/help/translations tarballs are kept as downloaded archives
-# (not unpacked) so build() can place them into external/tarballs/ under the
-# names LO's get-submodules expects, avoiding network access at build time.
-noextract=(
-  "libreoffice-dictionaries-${pkgver}.tar.gz"
-  "libreoffice-help-${pkgver}.tar.gz"
-  "libreoffice-translations-${pkgver}.tar.gz"
-)
 sha256sums=(
-  '417c9f47a6b0a6565be71907ab9e59623faf2f4786b403ce1b90fe61570a404a'
-  'SKIP'
-  'SKIP'
   'SKIP'
   '9f151e6e23ce75da475a2922ca091853e712f28da694b1d90d952b1290a6d846'
   '98f41a0f9cda7bfbee46dfb78fcc12331404276f4bdf7763e090dd9b0d524076'
 )
 
 build() {
-  cd "${srcdir}/core-cp-${pkgver}-${_pkgrel}"
-  if [ ! -d external/tarballs ]; then
-    mkdir external/tarballs/
-
-    cp "${srcdir}/libreoffice-dictionaries-${pkgver}.tar.gz" \
-      "external/tarballs/libreoffice-dictionaries-${pkgver}.tar.xz"
-    cp "${srcdir}/libreoffice-help-${pkgver}.tar.gz" \
-      "external/tarballs/libreoffice-help-${pkgver}.tar.xz"
-    cp "${srcdir}/libreoffice-translations-${pkgver}.tar.gz" \
-      "external/tarballs/libreoffice-translations-${pkgver}.tar.xz"
-  fi
-
-  tar xf "external/tarballs/libreoffice-dictionaries-${pkgver}.tar.xz" \
-    --directory=dictionaries \
-    --strip-components 1
-  tar xf "external/tarballs/libreoffice-help-${pkgver}.tar.xz" \
-    --directory=helpcontent2 \
-    --strip-components 1
-  tar xf "external/tarballs/libreoffice-translations-${pkgver}.tar.xz" \
-    --directory=translations \
-    --strip-components 1
+  cd "${srcdir}/online.mirror-cp-${pkgver}-${_pkgrel}/engine"
 
   # fix not upstreamable pyuno paths - FS#54250
-  patch -Np1 -i ../make-pyuno-work-with-system-wide-module-install.diff
-  cat ../openoffice.lst.in.append >>instsetoo_native/util/openoffice.lst.in
+  patch -Np1 -i ../../make-pyuno-work-with-system-wide-module-install.diff
+  cat ../../openoffice.lst.in.append >>instsetoo_native/util/openoffice.lst.in
 
   sed -i "s/: check-if-root/:/" Makefile.in
 
@@ -230,7 +196,7 @@ build() {
     --disable-dconf \
     --enable-mergelibs \
     --enable-release-build \
-    --with-lang=ALL \
+    --with-lang=en-US \
     --disable-lotuswordpro \
     --disable-lpsolve \
     --disable-symbols \
@@ -243,7 +209,7 @@ build() {
 }
 
 package() {
-  cd "${srcdir}/core-cp-${pkgver}-${_pkgrel}"
+  cd "${srcdir}/online.mirror-cp-${pkgver}-${_pkgrel}/engine"
 
   install -dm755 "${pkgdir}/opt/zextras/docs/core"
   cp -r instdir/* "${pkgdir}"/opt/zextras/docs/core
