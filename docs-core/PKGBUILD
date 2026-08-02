@@ -2,9 +2,15 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-only
 
+_clang_apt_version="clang-18"
+_pkgrel="3"
+_pyver_rocky_8="3.11"
+_pyver_rocky_9="3.11"
+_pyver_ubuntu_jammy="3.10"
+_pyver_ubuntu_noble="3.12"
+
 pkgname="carbonio-docs-core"
 pkgver="26.04.2" # renovate: datasource=github-tags depName=CollaboraOnline/online.mirror
-_pkgrel="3"
 pkgrel="1"
 pkgdesc="Core components for Docs Server"
 maintainer="Zextras <packages@zextras.com>"
@@ -25,10 +31,9 @@ makedepends__apt=(
   "autoconf"
   "automake"
   "bison"
-  "bzip2"
   "carbonio-curl"
   "carbonio-openssl"
-  "clang"
+  "${_clang_apt_version}"
   "curl"
   "flex"
   "fontconfig"
@@ -52,6 +57,7 @@ makedepends__apt=(
   "llvm"
   "m4"
   "nasm"
+  "ninja-build"
   "pkg-config"
   "python3"
   "python3-lxml"
@@ -74,7 +80,6 @@ depends__yum=(
 makedepends__yum=(
   "automake"
   "bison"
-  "bzip2"
   "carbonio-curl"
   "carbonio-openssl"
   "clang"
@@ -100,13 +105,14 @@ makedepends__yum=(
   "llvm"
   "m4"
   "nasm"
+  "ninja-build"
   "nodejs"
   "pam-devel"
   "pcre-devel"
   "perl"
   "pkgconfig"
-  "python3"
-  "python3-lxml"
+  "python${_pyver_rocky_8}"
+  "python${_pyver_rocky_8}-lxml"
   "python3-polib"
   "pxz"
   "unzip"
@@ -125,6 +131,20 @@ sha256sums=(
   '98f41a0f9cda7bfbee46dfb78fcc12331404276f4bdf7763e090dd9b0d524076'
 )
 
+_package_common() {
+  cd "${srcdir}/online.mirror-cp-${pkgver}-${_pkgrel}/engine"
+
+  install -dm755 "${pkgdir}/opt/zextras/docs/core"
+  cp -r instdir/* "${pkgdir}"/opt/zextras/docs/core
+
+  # add headers
+  #  install -dm755 "${pkgdir}"/opt/zextras/common/include/LibreOfficeKit
+  #  install -v -m644 include/LibreOfficeKit/* \
+  #    "${pkgdir}"/opt/zextras/common/include/LibreOfficeKit
+
+  rm "${pkgdir}"/opt/zextras/docs/core/EULA*
+}
+
 build() {
   cd "${srcdir}/online.mirror-cp-${pkgver}-${_pkgrel}/engine"
 
@@ -134,14 +154,17 @@ build() {
 
   sed -i "s/: check-if-root/:/" Makefile.in
 
-  export CC=clang
-  export CXX=clang++
+  if command -v "${_clang_apt_version}" >/dev/null 2>&1; then
+    export CC="${_clang_apt_version}"
+    export CXX="${_clang_apt_version/clang/clang++}"
+  else
+    export CC=clang
+    export CXX=clang++
+  fi
 
   bash ./autogen.sh --libdir=/opt/zextras/docs \
     --prefix=/opt/zextras/docs \
-    --enable-release-build \
     --enable-eot \
-    --enable-extension-integration \
     --with-product-name=core \
     --with-vendor=zextras \
     --with-system-dicts \
@@ -161,8 +184,6 @@ build() {
     --without-system-icu \
     --without-system-nss \
     --without-system-jars \
-    --without-system-poppler \
-    --without-system-postgresql \
     --without-java \
     --without-junit \
     --without-help \
@@ -172,59 +193,68 @@ build() {
     --with-galleries=no \
     --with-theme=colibre_svg \
     --disable-dbus \
-    --disable-odk \
     --disable-kf5 \
     --disable-gtk3 \
     --disable-qt5 \
-    --disable-gstreamer-1-0 \
     --disable-evolution2 \
     --disable-gio \
     --disable-gui \
-    --disable-scripting-beanshell \
-    --disable-scripting-javascript \
-    --disable-ext-wiki-publisher \
-    --disable-report-builder \
-    --disable-ext-nlpsolver \
     --disable-sdremote \
     --disable-sdremote-bluetooth \
-    --disable-postgresql-sdbc \
-    --disable-firebird-sdbc \
     --disable-randr \
     --enable-epm \
     --enable-python=system \
-    --disable-online-update \
     --disable-dconf \
     --enable-mergelibs \
-    --enable-release-build \
     --with-lang=en-US \
-    --disable-lotuswordpro \
-    --disable-lpsolve \
     --disable-symbols \
     --disable-coinmp \
-    --disable-debug \
-    --disable-extension-update
+    --disable-debug
 
   echo "lo_sources_ver=${pkgver}" >sources.ver
   make build -j 4
 }
 
 package() {
-  cd "${srcdir}/online.mirror-cp-${pkgver}-${_pkgrel}/engine"
+  _package_common
+}
 
-  install -dm755 "${pkgdir}/opt/zextras/docs/core"
-  cp -r instdir/* "${pkgdir}"/opt/zextras/docs/core
+package__rocky_8() {
+  _package_common
 
-  # make pyuno find its modules
-  install -dm755 "${pkgdir}"/opt/zextras/common/lib/python3.8/site-packages
+  install -dm755 "${pkgdir}/opt/zextras/common/lib/python${_pyver_rocky_8}/site-packages"
   ln -svf /opt/zextras/docs/core/program/uno.py \
-    "${pkgdir}"/opt/zextras/common/lib/python3.8/site-packages/uno.py
+    "${pkgdir}/opt/zextras/common/lib/${_pyver_rocky_8}/site-packages/uno.py"
   ln -svf /opt/zextras/docs/core/program/unohelper.py \
-    "${pkgdir}"/opt/zextras/common/lib/python3.8/site-packages/unohelper.py
+    "${pkgdir}/opt/zextras/common/lib/python${_pyver_rocky_8}/site-packages/unohelper.py"
+}
 
-  # add headers
-  install -dm755 "${pkgdir}"/opt/zextras/common/include/LibreOfficeKit
-  install -v -m644 include/LibreOfficeKit/* \
-    "${pkgdir}"/opt/zextras/common/include/LibreOfficeKit
+package__rocky_9() {
+  _package_common
 
-  rm "${pkgdir}"/opt/zextras/docs/core/EULA*
+  install -dm755 "${pkgdir}/opt/zextras/common/lib/python${_pyver_rocky_9}/site-packages"
+  ln -svf /opt/zextras/docs/core/program/uno.py \
+    "${pkgdir}/opt/zextras/common/lib/${_pyver_rocky_9}/site-packages/uno.py"
+  ln -svf /opt/zextras/docs/core/program/unohelper.py \
+    "${pkgdir}/opt/zextras/common/lib/python${_pyver_rocky_9}/site-packages/unohelper.py"
+}
+
+package__ubuntu_jammy() {
+  _package_common
+
+  install -dm755 "${pkgdir}/opt/zextras/common/lib/python${_pyver_ubuntu_jammy}/site-packages"
+  ln -svf /opt/zextras/docs/core/program/uno.py \
+    "${pkgdir}/opt/zextras/common/lib/${_pyver_ubuntu_jammy}/site-packages/uno.py"
+  ln -svf /opt/zextras/docs/core/program/unohelper.py \
+    "${pkgdir}/opt/zextras/common/lib/${_pyver_ubuntu_jammy}8/site-packages/unohelper.py"
+}
+
+package__ubuntu_noble() {
+  _package_common
+
+  install -dm755 "${pkgdir}/opt/zextras/common/lib/python${_pyver_ubuntu_noble}/site-packages"
+  ln -svf /opt/zextras/docs/core/program/uno.py \
+    "${pkgdir}/opt/zextras/common/lib/python${_pyver_ubuntu_noble}/site-packages/uno.py"
+  ln -svf /opt/zextras/docs/core/program/unohelper.py \
+    "${pkgdir}/opt/zextras/common/lib/python${_pyver_ubuntu_noble}/site-packages/unohelper.py"
 }
