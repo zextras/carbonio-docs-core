@@ -8,10 +8,8 @@
 # Whatever newer interpreter transitively lands on PATH next breaks
 # ./configure the way python3.12 did (Python 3.12 removed distutils, which
 # configure.ac still calls into to derive PYTHON_CFLAGS/PYTHON_LIBS).
-# Pin explicitly per Rocky release instead of racing PATH, matching
+# Pin explicitly to python3.11 instead of racing PATH, matching
 # carbonio-certbot's precedent: https://github.com/zextras/carbonio-certbot/blob/main/certbot/PKGBUILD#L5
-_pyver_rocky_8="3.11"
-_pyver_rocky_9="3.11"
 
 pkgname="carbonio-docs-core"
 pkgver="25.04.8" # renovate: datasource=github-tags depName=LibreOffice/core
@@ -73,25 +71,16 @@ makedepends__apt=(
   "xsltproc"
   "zip"
 )
-depends__rocky_8=(
+depends__rocky=(
   "carbonio-curl"
   "carbonio-openssl"
   "graphite2"
   "libepoxy"
   "nspr"
-  "python${_pyver_rocky_8}"
+  "python3.11"
   "zip"
 )
-depends__rocky_9=(
-  "carbonio-curl"
-  "carbonio-openssl"
-  "graphite2"
-  "libepoxy"
-  "nspr"
-  "python${_pyver_rocky_9}"
-  "zip"
-)
-makedepends__rocky_8=(
+makedepends__rocky=(
   "automake"
   "bison"
   "bzip2"
@@ -125,52 +114,8 @@ makedepends__rocky_8=(
   "pcre-devel"
   "perl"
   "pkgconfig"
-  "python${_pyver_rocky_8}"
-  "python${_pyver_rocky_8}-devel"
-  "python3-lxml"
-  "python3-polib"
-  "pxz"
-  "unzip"
-  "util-linux"
-  "which"
-  "zip"
-)
-makedepends__rocky_9=(
-  "automake"
-  "bison"
-  "bzip2"
-  "carbonio-curl"
-  "carbonio-openssl"
-  "clang"
-  "cpio"
-  "curl"
-  "cpp"
-  "cppunit-devel"
-  "cups-devel"
-  "flex"
-  "fontconfig"
-  "fontconfig-devel"
-  "git"
-  "gperf"
-  "graphite2-devel"
-  "libcap-devel"
-  "libcap-ng-devel"
-  "libepoxy-devel"
-  "libpng-devel"
-  "libtool"
-  "libX11-devel"
-  "libxslt-devel"
-  "libzstd-devel"
-  "llvm"
-  "m4"
-  "nasm"
-  "nodejs"
-  "pam-devel"
-  "pcre-devel"
-  "perl"
-  "pkgconfig"
-  "python${_pyver_rocky_9}"
-  "python${_pyver_rocky_9}-devel"
+  "python3.11"
+  "python3.11-devel"
   "python3-lxml"
   "python3-polib"
   "pxz"
@@ -206,12 +151,12 @@ sha256sums=(
 
 # Common LibreOffice build steps shared by every distro variant. Not a
 # lifecycle hook, so yap injects it as a helper-function preamble into
-# build()/build__rocky_8()/build__rocky_9() rather than duplicating this
-# ~90-line body per distro.
+# build()/build__rocky() rather than duplicating this ~90-line body per
+# distro.
 #
 # PYTHON/PYTHON_CFLAGS/PYTHON_LIBS may already be exported by the caller
-# (see build__rocky_8/build__rocky_9 below) to pin the interpreter LO's
-# autoconf-based Python detection picks up. LibreOffice's configure.ac
+# (see build__rocky below) to pin the interpreter LO's autoconf-based
+# Python detection picks up. LibreOffice's configure.ac
 # (~L10442, ~L10529) always unsets PYTHON and rescans PATH for the newest
 # python3.X binary otherwise, ignoring update-alternatives entirely — which
 # is how a transitively-installed python3.12 broke Rocky builds (Python
@@ -326,17 +271,10 @@ build() {
   _docs_core_prepare_and_build
 }
 
-build__rocky_8() {
-  export PYTHON="/usr/bin/python${_pyver_rocky_8}"
-  export PYTHON_CFLAGS="$("/usr/bin/python${_pyver_rocky_8}-config" --includes)"
-  export PYTHON_LIBS="$("/usr/bin/python${_pyver_rocky_8}-config" --ldflags --embed)"
-  _docs_core_prepare_and_build
-}
-
-build__rocky_9() {
-  export PYTHON="/usr/bin/python${_pyver_rocky_9}"
-  export PYTHON_CFLAGS="$("/usr/bin/python${_pyver_rocky_9}-config" --includes)"
-  export PYTHON_LIBS="$("/usr/bin/python${_pyver_rocky_9}-config" --ldflags --embed)"
+build__rocky() {
+  export PYTHON=/usr/bin/python3.11
+  export PYTHON_CFLAGS="$(/usr/bin/python3.11-config --includes)"
+  export PYTHON_LIBS="$(/usr/bin/python3.11-config --ldflags --embed)"
   _docs_core_prepare_and_build
 }
 
