@@ -71,7 +71,7 @@ makedepends__apt=(
   "xsltproc"
   "zip"
 )
-depends__rocky=(
+depends__yum=(
   "carbonio-curl"
   "carbonio-openssl"
   "graphite2"
@@ -80,7 +80,7 @@ depends__rocky=(
   "python3.11"
   "zip"
 )
-makedepends__rocky=(
+makedepends__yum=(
   "automake"
   "bison"
   "bzip2"
@@ -151,11 +151,11 @@ sha256sums=(
 
 # Common LibreOffice build steps shared by every distro variant. Not a
 # lifecycle hook, so yap injects it as a helper-function preamble into
-# build()/build__rocky() rather than duplicating this ~90-line body per
+# build()/build__yum() rather than duplicating this ~90-line body per
 # distro.
 #
 # PYTHON/PYTHON_CFLAGS/PYTHON_LIBS may already be exported by the caller
-# (see build__rocky below) to pin the interpreter LO's autoconf-based
+# (see build__yum below) to pin the interpreter LO's autoconf-based
 # Python detection picks up. LibreOffice's configure.ac
 # (~L10442, ~L10529) always unsets PYTHON and rescans PATH for the newest
 # python3.X binary otherwise, ignoring update-alternatives entirely — which
@@ -271,7 +271,7 @@ build() {
   _docs_core_prepare_and_build
 }
 
-build__rocky() {
+build__yum() {
   export PYTHON=/usr/bin/python3.11
   export PYTHON_CFLAGS="$(/usr/bin/python3.11-config --includes)"
   export PYTHON_LIBS="$(/usr/bin/python3.11-config --ldflags --embed)"
