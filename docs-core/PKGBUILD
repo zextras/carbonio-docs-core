@@ -68,7 +68,7 @@ depends__yum=(
   "graphite2"
   "libepoxy"
   "nspr"
-  "python3"
+  "python3.11"
   "zip"
 )
 makedepends__yum=(
@@ -105,9 +105,8 @@ makedepends__yum=(
   "pcre-devel"
   "perl"
   "pkgconfig"
-  "python3"
-  "python3-devel"
-  "python3.12-devel"
+  "python3.11"
+  "python3.11-devel"
   "python3-lxml"
   "python3-polib"
   "pxz"
@@ -172,6 +171,23 @@ build() {
 
   export CC=clang
   export CXX=clang++
+
+  # Rocky ships a newer python3.X on PATH (pulled in transitively by other
+  # packages) that LibreOffice's autoconf-based Python detection always
+  # prefers over whatever we declare in makedepends. When that happens to
+  # be >=3.12, ./configure breaks because Python 3.12 removed the distutils
+  # module LO's configure.ac still calls into (distutils.sysconfig) to
+  # derive PYTHON_CFLAGS/PYTHON_LIBS for pyuno. Pin explicitly to python3.11
+  # (matches carbonio-certbot's Rocky Python floor, see
+  # zextras/carbonio-certbot#53) instead of racing whatever is newest on
+  # PATH. PYTHON_CFLAGS/PYTHON_LIBS pre-set also short-circuits configure's
+  # internal distutils-based re-detection entirely (configure.ac ~L10522).
+  distro_id=$(. /etc/os-release && echo "${ID}")
+  if [ "${distro_id}" = "rocky" ]; then
+    export PYTHON=/usr/bin/python3.11
+    export PYTHON_CFLAGS="$(/usr/bin/python3.11-config --includes)"
+    export PYTHON_LIBS="$(/usr/bin/python3.11-config --ldflags --embed)"
+  fi
 
   bash ./autogen.sh --libdir=/opt/zextras/docs \
     --prefix=/opt/zextras/docs \
