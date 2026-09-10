@@ -2,6 +2,15 @@
 #
 # SPDX-License-Identifier: AGPL-3.0-only
 
+# LibreOffice's autoconf-based Python detection (configure.ac ~L10442,
+# ~L10529) always unsets PYTHON and rescans PATH for the newest python3.X
+# binary, ignoring update-alternatives and any PYTHON= set beforehand.
+# Whatever newer interpreter transitively lands on PATH next breaks
+# ./configure the way python3.12 did (Python 3.12 removed distutils, which
+# configure.ac still calls into to derive PYTHON_CFLAGS/PYTHON_LIBS).
+# Pin explicitly to python3.11 instead of racing PATH, matching
+# carbonio-certbot's precedent: https://github.com/zextras/carbonio-certbot/blob/main/certbot/PKGBUILD#L5
+
 pkgname="carbonio-docs-core"
 pkgver="25.04.8" # renovate: datasource=github-tags depName=LibreOffice/core
 _pkgrel="3"
@@ -68,7 +77,7 @@ depends__yum=(
   "graphite2"
   "libepoxy"
   "nspr"
-  "python3"
+  "python3.11"
   "zip"
 )
 makedepends__yum=(
@@ -105,7 +114,8 @@ makedepends__yum=(
   "pcre-devel"
   "perl"
   "pkgconfig"
-  "python3"
+  "python3.11"
+  "python3.11-devel"
   "python3-lxml"
   "python3-polib"
   "pxz"
@@ -139,7 +149,22 @@ sha256sums=(
   '98f41a0f9cda7bfbee46dfb78fcc12331404276f4bdf7763e090dd9b0d524076'
 )
 
-build() {
+# Common LibreOffice build steps shared by every distro variant. Not a
+# lifecycle hook, so yap injects it as a helper-function preamble into
+# build()/build__yum() rather than duplicating this ~90-line body per
+# distro.
+#
+# PYTHON/PYTHON_CFLAGS/PYTHON_LIBS may already be exported by the caller
+# (see build__yum below) to pin the interpreter LO's autoconf-based
+# Python detection picks up. LibreOffice's configure.ac
+# (~L10442, ~L10529) always unsets PYTHON and rescans PATH for the newest
+# python3.X binary otherwise, ignoring update-alternatives entirely — which
+# is how a transitively-installed python3.12 broke Rocky builds (Python
+# 3.12 removed the distutils module configure.ac still calls into to derive
+# these flags). Pre-setting PYTHON_CFLAGS/PYTHON_LIBS short-circuits that
+# whole distutils-based re-detection path (configure.ac ~L10522). Ubuntu
+# jammy/noble need no override: their default python3 already satisfies LO.
+_docs_core_prepare_and_build() {
   cd "${srcdir}/core-cp-${pkgver}-${_pkgrel}"
   if [ ! -d external/tarballs ]; then
     mkdir external/tarballs/
@@ -240,6 +265,17 @@ build() {
 
   echo "lo_sources_ver=${pkgver}" >sources.ver
   make build -j 4
+}
+
+build() {
+  _docs_core_prepare_and_build
+}
+
+build__yum() {
+  export PYTHON=/usr/bin/python3.11
+  export PYTHON_CFLAGS="$(/usr/bin/python3.11-config --includes)"
+  export PYTHON_LIBS="$(/usr/bin/python3.11-config --ldflags --embed)"
+  _docs_core_prepare_and_build
 }
 
 package() {
