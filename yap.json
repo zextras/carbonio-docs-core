@@ -3,10 +3,17 @@
     "description": "This is the lool-core project",
     "buildDir": "/tmp/",
     "output": "artifacts",
-    "projects": [
+    "repos": [
         {
-            "name": "poco"
-        },
+            "name": "llvm-18",
+            "url": "http://apt.llvm.org/jammy",
+            "suite": "llvm-toolchain-jammy-18",
+            "components": ["main"],
+            "keyURL": "https://apt.llvm.org/llvm-snapshot.gpg.key",
+            "distros": ["ubuntu-jammy", "ubuntu-noble"]
+        }
+    ],
+    "projects": [
         {
             "name": "docs-core"
         }
