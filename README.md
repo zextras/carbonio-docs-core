@@ -12,7 +12,7 @@ Carbonio Docs Core is the build and packaging repository for the LibreOffice-bas
 
 This repository contains packaging definitions (PKGBUILD files) and build configurations for two main components:
 
-- **docs-core** - A customized, headless LibreOffice core (v25.04.3) configured for server-side document processing. GUI, desktop integration, and optional features are disabled to produce a lean document conversion and rendering engine.
+- **docs-core** - A customized, headless LibreOffice core (v26.04.2), sourced from the CollaboraOnline/online.mirror `engine/` tree, configured for server-side document processing. GUI, desktop integration, and optional features are disabled to produce a lean document conversion and rendering engine.
 - **poco** - The POCO C++ class libraries (v1.14.1) for network-centric applications, required as a dependency by Carbonio Docs Server.
 
 Packages are installed under `/opt/zextras/docs/` with LibreOfficeKit headers in `/opt/zextras/common/include/LibreOfficeKit` and PyUNO Python bindings symlinked into the system Python path.
