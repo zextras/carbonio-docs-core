@@ -6,16 +6,15 @@ SPDX-License-Identifier: CC-BY-NC-SA-4.0
 
 # Carbonio Docs Core
 
-Carbonio Docs Core is the build and packaging repository for the LibreOffice-based document processing engine that powers the Zextras Carbonio Docs collaborative editing feature. It compiles a headless, server-optimized LibreOffice core along with the POCO C++ networking libraries, producing DEB and RPM packages for deployment.
+Carbonio Docs Core is the build and packaging repository for the LibreOffice-based document processing engine that powers the Zextras Carbonio Docs collaborative editing feature. It compiles a headless, server-optimized LibreOffice core, producing DEB and RPM packages for deployment.
 
 ## Overview
 
-This repository contains packaging definitions (PKGBUILD files) and build configurations for two main components:
+This repository contains packaging definitions (PKGBUILD files) and build configurations for:
 
-- **docs-core** - A customized, headless LibreOffice core (v25.04.3) configured for server-side document processing. GUI, desktop integration, and optional features are disabled to produce a lean document conversion and rendering engine.
-- **poco** - The POCO C++ class libraries (v1.14.1) for network-centric applications, required as a dependency by Carbonio Docs Server.
+- **docs-core** - A customized, headless LibreOffice core (v26.04.2), sourced from the CollaboraOnline/online.mirror `engine/` tree, configured for server-side document processing. GUI, desktop integration, and optional features are disabled to produce a lean document conversion and rendering engine.
 
-Packages are installed under `/opt/zextras/docs/` with LibreOfficeKit headers in `/opt/zextras/common/include/LibreOfficeKit` and PyUNO Python bindings symlinked into the system Python path.
+Packages are installed under `/opt/zextras/docs/` with COKit (formerly LibreOfficeKit) headers in `/opt/zextras/common/include/COKit` and PyUNO Python bindings symlinked into the system Python path.
 
 ## Quick Start
 
@@ -29,7 +28,7 @@ Building requires `yap` (version 1.48 or later) and `podman` installed on the ho
 
 **RHEL (YUM) build dependencies** include: automake, bison, clang, cmake, ninja-build, gcc-c++, and various development libraries.
 
-See the `PKGBUILD` files in `docs-core/` and `poco/` for the complete dependency lists.
+See `docs-core/PKGBUILD` for the complete dependency lists.
 
 ### Dependencies
 
@@ -68,7 +67,7 @@ make build-rhel-only TARGET=rocky-8 DEPS_DIR=../carbonio-thirds/artifacts
 
 ### Build Commands
 
-- `make build` - Build all packages (poco + docs-core)
+- `make build` - Build the docs-core package
 - `make build-rhel-only` - Build RHEL-only packages (Rocky only, skips Node.js installation)
 - `make clean` - Remove build artifacts
 

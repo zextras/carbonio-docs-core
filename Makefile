@@ -47,7 +47,7 @@ help:
 	@echo ""
 	@echo "Targets:"
 	@echo "  help           Show this help message"
-	@echo "  build          Build all packages (poco + docs-core)"
+	@echo "  build          Build the docs-core package"
 	@echo "  build-rhel-only Build RHEL-only packages (Rocky only)"
 	@echo "  debug-build    Start interactive shell in build container"
 	@echo "  clean          Remove build artifacts"
@@ -69,7 +69,7 @@ help:
 	@echo "  make build-rhel-only TARGET=rocky-8 DEPS_DIR=../carbonio-thirds/artifacts"
 	@echo ""
 
-## build: Build all packages (poco + docs-core)
+## build: Build the docs-core package
 build:
 	@mkdir -p artifacts $(CCACHE_DIR)
 	$(CONTAINER_RUNTIME) run $(CONTAINER_OPTS) $(DEPS_MOUNT) $(YAP_IMAGE) \
