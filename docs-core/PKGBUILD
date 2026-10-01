@@ -195,11 +195,60 @@ sha256sums=(
   '98f41a0f9cda7bfbee46dfb78fcc12331404276f4bdf7763e090dd9b0d524076'
 )
 
+# DEBUG: fakeroot inspection. yap's BuildScriptPreamble emits every helper
+# function into package*(), so these are callable there. Output is bounded
+# so CI logs stay readable. Never fails the build (all errors swallowed).
+# Usage: _debug_tree <label> <dir> [maxdepth]
+_debug_tree() {
+  local label="$1" dir="$2" depth="${3:-2}"
+  echo "=================== [debug] ${label}: ${dir} ==================="
+  if [ ! -d "${dir}" ]; then
+    echo "!! MISSING DIRECTORY: ${dir}"
+    return 0
+  fi
+  echo "-- totals: $(find "${dir}" -type f 2>/dev/null | wc -l) files," \
+    "$(find "${dir}" -type l 2>/dev/null | wc -l) symlinks," \
+    "$(find "${dir}" -type d 2>/dev/null | wc -l) dirs," \
+    "$(du -sh "${dir}" 2>/dev/null | cut -f1)"
+  echo "-- size per entry (depth 1):"
+  du -sh "${dir}"/* "${dir}"/.[!.]* 2>/dev/null | sort -rh | head -n 30 || true
+  echo "-- tree (maxdepth ${depth}, dirs only, first 80):"
+  find "${dir}" -mindepth 1 -maxdepth "${depth}" -type d 2>/dev/null |
+    sed "s|^${dir}/||" | sort | head -n 80 || true
+  echo "-- symlinks (first 40):"
+  find "${dir}" -type l -printf '%p -> %l\n' 2>/dev/null | head -n 40 || true
+  echo "-- empty files (first 20):"
+  find "${dir}" -type f -empty 2>/dev/null | head -n 20 || true
+  echo "=================== [debug] end ${label} ==================="
+}
+
+# DEBUG: list paths present in <src> but absent from <dst> (what got lost
+# in the copy) and vice versa. Usage: _debug_diff <src> <dst>
+_debug_diff() {
+  local src="$1" dst="$2" a b
+  a="$(mktemp)" b="$(mktemp)"
+  (cd "${src}" 2>/dev/null && find . | sort) >"${a}" || true
+  (cd "${dst}" 2>/dev/null && find . | sort) >"${b}" || true
+  echo "=================== [debug] diff ${src} -> ${dst} ==================="
+  echo "-- in src, MISSING from dst: $(comm -23 "${a}" "${b}" | wc -l)"
+  comm -23 "${a}" "${b}" | head -n 100 || true
+  echo "-- in dst, not in src: $(comm -13 "${a}" "${b}" | wc -l)"
+  comm -13 "${a}" "${b}" | head -n 30 || true
+  rm -f "${a}" "${b}"
+  echo "=================== [debug] end diff ==================="
+}
+
 _package_common() {
   cd "${srcdir}/online.mirror-cp-${pkgver}-${_pkgrel}/engine"
 
+  echo "[debug] pwd=$(pwd) srcdir=${srcdir} pkgdir=${pkgdir}"
+  _debug_tree "instdir (build output)" "$(pwd)/instdir" 2
+  ls -la instdir/program 2>/dev/null | head -n 40 || true
+
   install -dm755 "${pkgdir}/opt/zextras/docs/core"
   cp -r instdir/* "${pkgdir}"/opt/zextras/docs/core
+
+  _debug_diff "$(pwd)/instdir" "${pkgdir}/opt/zextras/docs/core"
 
   # add headers
   #  install -dm755 "${pkgdir}"/opt/zextras/common/include/LibreOfficeKit
@@ -330,6 +379,8 @@ package__rocky_8() {
     "${pkgdir}/opt/zextras/common/lib/${_pyver_rocky_8}/site-packages/uno.py"
   ln -svf /opt/zextras/docs/core/program/unohelper.py \
     "${pkgdir}/opt/zextras/common/lib/python${_pyver_rocky_8}/site-packages/unohelper.py"
+
+  _debug_tree "pkgdir (fakeroot, final)" "${pkgdir}" 4
 }
 
 package__rocky_9() {
@@ -340,6 +391,8 @@ package__rocky_9() {
     "${pkgdir}/opt/zextras/common/lib/${_pyver_rocky_9}/site-packages/uno.py"
   ln -svf /opt/zextras/docs/core/program/unohelper.py \
     "${pkgdir}/opt/zextras/common/lib/python${_pyver_rocky_9}/site-packages/unohelper.py"
+
+  _debug_tree "pkgdir (fakeroot, final)" "${pkgdir}" 4
 }
 
 package__ubuntu_jammy() {
@@ -350,6 +403,8 @@ package__ubuntu_jammy() {
     "${pkgdir}/opt/zextras/common/lib/${_pyver_ubuntu_jammy}/site-packages/uno.py"
   ln -svf /opt/zextras/docs/core/program/unohelper.py \
     "${pkgdir}/opt/zextras/common/lib/${_pyver_ubuntu_jammy}/site-packages/unohelper.py"
+
+  _debug_tree "pkgdir (fakeroot, final)" "${pkgdir}" 4
 }
 
 package__ubuntu_noble() {
@@ -360,4 +415,6 @@ package__ubuntu_noble() {
     "${pkgdir}/opt/zextras/common/lib/python${_pyver_ubuntu_noble}/site-packages/uno.py"
   ln -svf /opt/zextras/docs/core/program/unohelper.py \
     "${pkgdir}/opt/zextras/common/lib/python${_pyver_ubuntu_noble}/site-packages/unohelper.py"
+
+  _debug_tree "pkgdir (fakeroot, final)" "${pkgdir}" 4
 }
