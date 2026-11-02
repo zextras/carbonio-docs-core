@@ -14,7 +14,7 @@ This repository contains packaging definitions (PKGBUILD files) and build config
 
 - **docs-core** - A customized, headless LibreOffice core (v26.04.2), sourced from the CollaboraOnline/online.mirror `engine/` tree, configured for server-side document processing. GUI, desktop integration, and optional features are disabled to produce a lean document conversion and rendering engine.
 
-Packages are installed under `/opt/zextras/docs/` with COKit (formerly LibreOfficeKit) headers in `/opt/zextras/common/include/COKit` and PyUNO Python bindings symlinked into the system Python path.
+Packages are installed under `/opt/zextras/docs/` with COKit (formerly LibreOfficeKit) headers in `/opt/zextras/common/include/COKit`, an engine build-tree subset in `/opt/zextras/docs/engine` (static POCO, OpenSSL, expat, libpng and zstd, which carbonio-docs-editor links coolwsd against) and PyUNO Python bindings symlinked into the system Python path.
 
 ## Quick Start
 

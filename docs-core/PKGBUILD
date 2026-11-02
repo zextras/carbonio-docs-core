@@ -20,7 +20,7 @@ _pyver_ubuntu_noble="3.12"
 
 pkgname="carbonio-docs-core"
 pkgver="26.04.2" # renovate: datasource=github-tags depName=CollaboraOnline/online.mirror
-pkgrel="1"
+pkgrel="2"
 pkgdesc="Core components for Docs Server"
 maintainer="Zextras <packages@zextras.com>"
 url="https://zextras.com"
@@ -210,6 +210,36 @@ _package_common() {
   install -m644 include/COKit/* "${pkgdir}/opt/zextras/common/include/COKit"
 
   rm "${pkgdir}"/opt/zextras/docs/core/EULA*
+
+  # Engine build-tree subset for carbonio-docs-editor. coolwsd takes POCO
+  # (and the OpenSSL, expat, libpng and zstd it is built against) from the
+  # engine workdir via --with-lo-builddir; there is no system POCO any more.
+  # Mirror the exact workdir layout coolwsd's configure.ac expects.
+  local sdk="${pkgdir}/opt/zextras/docs/engine/workdir"
+  local ut="workdir/UnpackedTarball"
+  install -dm755 "${sdk}/LinkTarget/StaticLibrary" \
+    "${sdk}/UnpackedTarball/poco" \
+    "${sdk}/UnpackedTarball/openssl" \
+    "${sdk}/UnpackedTarball/libpng" \
+    "${sdk}/UnpackedTarball/zstd/lib"
+  install -m644 workdir/LinkTarget/StaticLibrary/libPoco*.a \
+    "${sdk}/LinkTarget/StaticLibrary/"
+  install -m644 workdir/LinkTarget/StaticLibrary/libexpat*.a \
+    "${sdk}/LinkTarget/StaticLibrary/"
+  cp -a "${ut}/poco/include" "${sdk}/UnpackedTarball/poco/"
+  cp -a "${ut}/openssl/include" "${sdk}/UnpackedTarball/openssl/"
+  install -m644 "${ut}"/openssl/libssl.a "${ut}"/openssl/libcrypto.a \
+    "${sdk}/UnpackedTarball/openssl/"
+  if [ -f workdir/LinkTarget/StaticLibrary/liblibpng.a ]; then
+    install -m644 workdir/LinkTarget/StaticLibrary/liblibpng.a \
+      "${sdk}/LinkTarget/StaticLibrary/"
+    install -m644 "${ut}"/libpng/*.h "${sdk}/UnpackedTarball/libpng/"
+  fi
+  if [ -f workdir/LinkTarget/StaticLibrary/libzstd.a ]; then
+    install -m644 workdir/LinkTarget/StaticLibrary/libzstd.a \
+      "${sdk}/LinkTarget/StaticLibrary/"
+    install -m644 "${ut}"/zstd/lib/*.h "${sdk}/UnpackedTarball/zstd/lib/"
+  fi
 }
 
 # Common LibreOffice build steps shared by every distro variant. Not a
