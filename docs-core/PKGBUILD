@@ -27,6 +27,10 @@ url="https://zextras.com"
 section="mail"
 priority="optional"
 arch=('x86_64')
+# The 26.x engine exports the COKit API (cok_*), which coolwsd < 26 cannot load.
+conflicts=(
+  "carbonio-docs-editor<26.04.2"
+)
 depends__apt=(
   "carbonio-curl"
   "carbonio-openssl"
